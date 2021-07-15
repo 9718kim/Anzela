@@ -227,10 +227,10 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
     }
 
     public void check(){
-        if(((titleText.getText().toString().equals("") || titleText.getText().toString() == null) == false)
-        & ((startPText.getText().toString().equals("") || startPText.getText().toString() == null) == false)
-        & (((endPText.getText().toString().equals("") || endPText.getText().toString() == null) == false) || endPCheck.isChecked())
-        & ((detailText.getText().toString().equals("") || detailText.getText().toString() == null) == false)){
+        if((!(titleText.getText().toString().equals("") || titleText.getText() == null))
+        && (!(startPText.getText().toString().equals("") || startPText.getText() == null))
+        && ((!(endPText.getText().toString().equals("") || endPText.getText() == null)) || endPCheck.isChecked())
+        && (!(detailText.getText().toString().equals("") || detailText.getText() == null))){
             completeButton.setBackgroundDrawable(ContextCompat.getDrawable(WriteActivity.this, R.drawable.radius12_aqua));
             completeButton.setTextColor(ContextCompat.getColor(WriteActivity.this, R.color.aqua_marine));
             complete_check = true;

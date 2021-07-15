@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class NearAdapter extends RecyclerView.Adapter<NearAdapter.CustomViewHolder>{
 
     private ArrayList<NearData> NeararrayList;
+    private HttpConnection http;
 
     public NearAdapter(ArrayList<NearData> arrayList) {
         this.NeararrayList = arrayList;
@@ -43,6 +44,7 @@ public class NearAdapter extends RecyclerView.Adapter<NearAdapter.CustomViewHold
                 Toast.makeText(v.getContext(), curTitle, Toast.LENGTH_SHORT).show();
 
                 // id 값으로 모임 상세 페이지 호출
+
             }
         });
     }

@@ -17,8 +17,10 @@ public class HttpConnection {
     private ArrayList<Post> PostList = new ArrayList<>();
     private ArrayList<Post> PostListAround = new ArrayList<>();
     private ArrayList<Post> PostListSoon = new ArrayList<>();
-    private ArrayList<BoardDetail> BoardDetailList = new ArrayList<>();
+    private BoardDetail BoardDetail= new BoardDetail();
     private ArrayList<User> userList = new ArrayList<>();
+    private ArrayList<Comments> commentsList= new ArrayList();
+    private ArrayList<User> subuserList = new ArrayList<>();
 
 
     // 모임 리스트
@@ -131,38 +133,43 @@ public class HttpConnection {
 
         JSONObject jsonObj_user = new JSONObject(user);
 
-        String comments = jsonObj_data.getString("comments");
-        JSONArray jsonArray_comments = new JSONArray(comments);
+        JSONArray jsonArray_comments = jsonObj_data.getJSONArray("comments");
 
-        //String subuser = jsonArray_comments
+        int id1 = jsonObj_data.getInt("id");
+        String title = jsonObj_data.getString("title");
+        String content = jsonObj_data.getString("content");
+        int cruCnt = jsonObj_data.getInt("cruCnt");
+        String startDate = jsonObj_data.getString("startDate");
+        String startPoint = jsonObj_data.getString("startPoint");
+        String startLat = jsonObj_data.optString("startLat", "text on no value");
+        String startLng = jsonObj_data.optString("startLng", "text on no value");
+        String endPoint = jsonObj_data.optString("endPoint", "text on no value");
+        String endLat = jsonObj_data.optString("endLat", "text on no value");
+        String endLng = jsonObj_data.optString("endLng", "text on no value");
+        int cmtCnt = jsonObj_data.getInt("cmtCnt");
+        String regDate = jsonObj_data.getString("regDate");
 
+        String uid = jsonObj_user.getString("uid");
+        String profileUrl = jsonObj_user.getString("profileUrl");
 
+        for (int i = 0; i < jsonArray_comments.length(); i++){
+            JSONObject jsonObj_com = jsonArray_comments.getJSONObject(i);
 
+            String com_id = jsonObj_com.getString("id");
+            String com_content = jsonObj_com.getString("content");
+            String com_depth = jsonObj_com.getString("depth");
+            String com_regDate = jsonObj_com.getString("regDate");
 
-        /*JSONObject jsonObj_user = jsonObj_2.getJSONObject("user");
-        JSONArray jsonArray_comments = jsonObj_2.getJSONArray("comments");
-        JSONObject jsonObj_5 = jsonArray_comments.getJSONObject(0);*/
+            JSONObject jsonObj_subuser = jsonObj_com.getJSONObject("user");
+            String com_uid = jsonObj_subuser.getString("uid");
+            String com_profileUrl = jsonObj_subuser.getString("profileUrl");
 
-        /*int id1 = jsonObj_2.getInt("id");
-        String title = jsonObj_2.getString("title");
-        String content = jsonObj_2.getString("content");
-        int cruCnt = jsonObj_2.getInt("cruCnt");
-        String startDate = jsonObj_2.getString("startDate");
-        String startPoint = jsonObj_2.getString("startPoint");
-        String startLat = jsonObj_2.optString("startLat", "text on no value");
-        String startLng = jsonObj_2.optString("startLng", "text on no value");
-        String endPoint = jsonObj_2.optString("endPoint", "text on no value");
-        String endLat = jsonObj_2.optString("endLat", "text on no value");
-        String endLng = jsonObj_2.optString("endLng", "text on no value");
-        int cmtCnt = jsonObj_2.getInt("cmtCnt");
-        String regDate = jsonObj_2.getString("regDate");
-        String uid = jsonObj_user.getString("uid");*/
+            commentsList.add(new Comments(com_id, com_content, com_depth, com_regDate, (new User(com_uid, com_profileUrl))));
+        }
 
-        //String comments = jsonObj_2.optString("comments", "text on no value");
-
-        //BoardDetailList.add(new BoardDetail(id1, title, content, cruCnt, startDate, startPoint, startLat, startLng, endPoint, endLat, endLng, cmtCnt, regDate, "", ""));
-
-        //Log.e("testtest", uid);
+        //Log.e("Test", content);
+        BoardDetail =(new BoardDetail(id1, title, content, cruCnt, startDate, startPoint, startLat, startLng, endPoint, endLat, endLng, cmtCnt, regDate, (new User(uid, profileUrl)), commentsList));
+        Log.e("Test", BoardDetail.getContent());
     }
 
     //받은 url과 method 서버 접속
@@ -207,6 +214,9 @@ public class HttpConnection {
     }
     public Object getPostSoon() {
         return PostListSoon;
+    }
+    public Object getBoardDetail() {
+        return  BoardDetail;
     }
 
 }

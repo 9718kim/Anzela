@@ -1,5 +1,7 @@
 package com.anzela.myapplication1;
 
+import java.util.ArrayList;
+
 public class BoardDetail {
     public int id;
     public String title;
@@ -15,10 +17,12 @@ public class BoardDetail {
     public int cmtCnt;
     public String regDate;
     public User user;
-    public Comments Comments;
+    public ArrayList<Comments> Comments;
 
-    public BoardDetail(int id, String title, String content, int cruCnt, String startDate, String startPoint, String startLat,
-                       String startLng, String endPoint, String endLat, String endLng, int cmtCnt, String regDate, User user, Comments Comments) {
+    public BoardDetail() {
+    }
+
+    public BoardDetail(int id, String title, String content, int cruCnt, String startDate, String startPoint, String startLat, String startLng, String endPoint, String endLat, String endLng, int cmtCnt, String regDate, User user, ArrayList<com.anzela.myapplication1.Comments> comments) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -33,7 +37,7 @@ public class BoardDetail {
         this.cmtCnt = cmtCnt;
         this.regDate = regDate;
         this.user = user;
-        this.Comments = Comments;
+        Comments = comments;
     }
 
     public int getId() {
@@ -148,11 +152,11 @@ public class BoardDetail {
         this.user = user;
     }
 
-    public Comments getComments() {
+    public ArrayList<com.anzela.myapplication1.Comments> getComments() {
         return Comments;
     }
 
-    public void setComments(Comments comments) {
+    public void setComments(ArrayList<com.anzela.myapplication1.Comments> comments) {
         Comments = comments;
     }
 }
