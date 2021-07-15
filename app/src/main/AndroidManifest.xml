@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.anzela.myapplication1">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MyApplication1"
+        android:usesCleartextTraffic="true">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDnXKj837SJvYR31nFF_kqojR8Fd2xRnr4" />
+
+
+        <activity android:name="com.anzela.myapplication1.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.anzela.myapplication1.MainActivity"/>
+        <activity android:name="com.anzela.myapplication1.AllListActivity"/>
+        <activity android:name="com.anzela.myapplication1.AroundListActivity"/>
+        <activity android:name="com.anzela.myapplication1.TimeLineListActivity"/>
+        <activity android:name="com.anzela.myapplication1.WriteActivity"/>
+        <activity android:name="com.anzela.myapplication1.DetailActivity"/>
+        <activity android:name="com.anzela.myapplication1.testActivity"/>
+    </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+</manifest>

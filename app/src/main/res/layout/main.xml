@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
+    tools:context=".MainActivity"
+    tools:openDrawer="start"
+    android:background="@color/black_two">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/top1">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="14dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_menu"
+                android:id="@+id/open_menu"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/userimg"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:padding="10dp"
+                android:layout_marginEnd="14dp"
+                android:src="@drawable/ic_noti"
+                android:background="@android:color/transparent"
+                android:id="@+id/notice"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/userimg"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/my_img"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintVertical_bias="0.475"
+                tools:ignore="MissingConstraints" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            android:layout_below="@+id/top1">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginTop="16dp"
+                tools:ignore="MissingConstraints" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="24dp"
+                    android:textColor="@color/white"
+                    android:id="@+id/nameText"
+                    android:text="[user]님, 오늘도\n달려볼까요?"/>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="73dp"
+                    app:layout_constraintTop_toBottomOf="@id/nameText"
+                    android:id="@+id/weather_box"
+                    android:layout_marginTop="24dp"
+                    android:paddingStart="16dp"
+                    android:paddingTop="16dp"
+                    android:background="@drawable/radius4_black">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:textStyle="normal"
+                        android:textSize="14dp"
+                        android:id="@+id/weather"
+                        android:textColor="@color/brown_grey"
+                        android:text="오늘 날씨"/>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="6dp"
+                        app:layout_constraintTop_toBottomOf="@id/weather">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_weather_sun"
+                            android:id="@+id/weather_icon"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toEndOf="@id/weather_icon"
+                            android:layout_marginStart="6dp"
+                            android:textStyle="normal"
+                            android:textSize="14dp"
+                            android:textColor="@color/aqua_marine"
+                            android:id="@+id/weather_temperature"
+                            android:text="°"/>
+                        <!--<TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toEndOf="@id/weather_temperature"
+                            android:layout_marginStart="4dp"
+                            android:textStyle="normal"
+                            android:textSize="14dp"
+                            android:textColor="@color/aqua_marine"
+                            android:text=""
+                            android:id="@+id/weather_text1"/>-->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginEnd="16dp"
+                            android:text="라이딩하기 좋은 날이네요!"
+                            android:id="@+id/weather_text2"
+                            android:textStyle="normal"
+                            android:textSize="14dp"
+                            android:textColor="@color/white"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toBottomOf="@+id/weather_box"
+                    android:layout_marginTop="32dp"
+                    android:id="@+id/upcoming_box"
+                    android:visibility="visible">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textSize="16dp"
+                        android:textColor="@color/white"
+                        android:text="다가오는 라이딩 일정"
+                        android:id="@+id/upcomingtext"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:layout_constraintTop_toBottomOf="@+id/upcomingtext"
+                        android:paddingTop="16dp"
+                        android:overScrollMode="never"
+                        android:id="@+id/comingrv"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <Button
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@color/white"
+                    app:layout_constraintTop_toTopOf="@id/upcoming_box"
+                    app:layout_constraintEnd_toEndOf="@id/upcoming_box"
+                    android:text="detail"
+                    android:textColor="@color/black"
+                    android:id="@+id/test1"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toBottomOf="@id/upcoming_box"
+                    android:layout_marginTop="16dp"
+                    android:id="@+id/near_box">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/near_box2">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:textSize="16dp"
+                            android:textColor="@color/white"
+                            android:text="내 근처 라이딩 모임"
+                            android:id="@+id/neartext"/>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_marker"
+                            app:layout_constraintEnd_toStartOf="@id/adresstext"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_marginEnd="5dp"
+                            android:foregroundGravity="center"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="normal"
+                            android:textSize="14dp"
+                            android:textColor="@color/aqua_marine"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:id="@+id/adresstext"
+                            android:text="설정하기"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:layout_constraintTop_toBottomOf="@+id/near_box2"
+                        android:paddingTop="16dp"
+                        android:overScrollMode="never"
+                        android:id="@+id/nearrv"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/near_box"
+                    android:paddingBottom="14dp"
+                    android:layout_marginTop="14dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/circle"
+                        android:layout_marginEnd="8dp"
+                        android:textStyle="normal"
+                        android:textSize="12dp"
+                        android:textColor="@color/white"
+                        android:text="더 많은 글 보러가기"/>
+                    <View
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/circle_aqua"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:id="@+id/circle"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/circle"
+                        app:layout_constraintEnd_toEndOf="@id/circle"
+                        android:padding="20dp"
+                        android:src="@drawable/ic_right_arrow_white"
+                        android:id="@+id/moreBtn"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </RelativeLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="307dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="68dp"
+        android:id="@+id/nav_view"
+        android:background="@color/black_three"
+        android:layout_gravity="start">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black_three"
+            tools:ignore="MissingConstraints"
+            android:fitsSystemWindows="true"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_close_white"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="12dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="10dp"
+                android:id="@+id/close_menu"
+                android:background="@android:color/transparent"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/close_menu"
+                android:layout_marginTop="28dp"
+                android:id="@+id/m_logo"
+                app:srcCompat="@drawable/menu_logo"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                app:layout_constraintTop_toBottomOf="@+id/m_logo"
+                android:layout_marginTop="30.5dp"
+                android:id="@+id/line1"
+                android:background="@color/greyish_brown"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                app:layout_constraintTop_toBottomOf="@id/line1"
+                android:layout_marginTop="7.5dp"
+                android:textStyle="normal"
+                android:textSize="16dp"
+                android:textColor="@color/white"
+                android:paddingStart="8dp"
+                android:text="전체 모임"
+                android:id="@+id/full_meeting"
+                android:gravity="center_vertical"
+                android:background="@drawable/menuclick"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                app:layout_constraintTop_toBottomOf="@id/full_meeting"
+                android:textStyle="normal"
+                android:textSize="16dp"
+                android:textColor="@color/white"
+                android:paddingStart="8dp"
+                android:text="내 근처 모임"
+                android:id="@+id/near_meeting"
+                android:gravity="center_vertical"
+                android:background="@drawable/menuclick"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                app:layout_constraintTop_toBottomOf="@id/near_meeting"
+                android:textStyle="normal"
+                android:textSize="16dp"
+                android:textColor="@color/white"
+                android:paddingStart="8dp"
+                android:text="일정이 가까운 모임"
+                android:id="@+id/schedule_meeting"
+                android:gravity="center_vertical"
+                android:background="@drawable/menuclick"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                app:layout_constraintTop_toBottomOf="@+id/schedule_meeting"
+                android:layout_marginTop="7.5dp"
+                android:id="@+id/line2"
+                android:background="@color/greyish_brown"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                app:layout_constraintTop_toBottomOf="@id/line2"
+                android:layout_marginTop="23.5dp"
+                android:textStyle="normal"
+                android:textSize="16dp"
+                android:textColor="@color/very_light_pink"
+                android:paddingStart="8dp"
+                android:text="내 정보"
+                android:id="@+id/myinformation"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                app:layout_constraintTop_toBottomOf="@id/myinformation"
+                android:layout_marginTop="8dp"
+                android:textStyle="normal"
+                android:textSize="16dp"
+                android:textColor="@color/very_light_pink"
+                android:paddingStart="8dp"
+                android:text="킥보드 정보"
+                android:id="@+id/about_kick"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="116dp"
+                android:layout_height="20dp"
+                app:layout_constraintTop_toBottomOf="@id/myinformation"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/radius10_aqua"
+                android:textStyle="normal"
+                android:textSize="12dp"
+                android:textColor="@color/aqua_marine"
+                android:text="어떤 킥보드 타세요?"
+                android:id="@+id/what_kick"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                app:layout_constraintTop_toBottomOf="@id/about_kick"
+                android:layout_marginTop="8dp"
+                android:textStyle="normal"
+                android:textSize="16dp"
+                android:textColor="@color/very_light_pink"
+                android:paddingStart="8dp"
+                android:text="내 신청목록"
+                android:id="@+id/apply_list"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                app:layout_constraintTop_toBottomOf="@id/apply_list"
+                android:layout_marginTop="8dp"
+                android:textStyle="normal"
+                android:textSize="16dp"
+                android:textColor="@color/very_light_pink"
+                android:paddingStart="8dp"
+                android:text="내가 쓴 글"
+                android:id="@+id/wrote"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textSize="12dp"
+                android:textColor="@color/very_light_pink"
+                android:text="ver 1.0.0"
+                android:layout_marginBottom="24dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>
