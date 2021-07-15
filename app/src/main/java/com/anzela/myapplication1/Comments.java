@@ -5,5 +5,5 @@ public class Comments {
     public String content;
     public String depth;
     public String regDate;
-
+    public String aaa;
 }
