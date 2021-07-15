@@ -46,7 +46,9 @@ public class MainActivity extends AppCompatActivity {
 
     private GpsTracker gpsTracker;
     private ApiExplorer apiExplorer;
-    private HttpConnection http;
+
+
+
     private ArrayList<UpcomingData> uparrayList;
     private UpcomingAdapter upAdapter;
     private RecyclerView uprecyclerView;
@@ -113,26 +115,68 @@ public class MainActivity extends AppCompatActivity {
 
         test = findViewById(R.id.test1);
 
+        // 날씨
+        Thread thread1 = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    HttpConnection http = new HttpConnection();
+                    http.getServerSoon(1, 20210714);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+//                            setUpAdapter();
+                            Log.d("TEST>>" , "Soon LIST SETUp : " + http.getPostSoon().size());
+                            setUpInfo((ArrayList<Post>) http.getPostSoon());
+                            upAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        },thread2= new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    HttpConnection http = new HttpConnection();
+                    http.getServerAround(1, 37.49 ,126.83);
+
+//                    http.getServer(1);
+//                    http.getServerDetail(1);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("TEST>>" , "NEAR LIST SETUp : " + http.getPostAround().size());
+                            NearsetUpInfo((ArrayList<Post>) http.getPostAround());
+                            //neararrayList = http.getPostAround();
+
+                            nearAdapter.notifyDataSetChanged();
+
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread1.start();
+        thread2.start();
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     apiExplorer = new ApiExplorer();
                     apiExplorer.lookupWeather();
-                    http = new HttpConnection();
-                    http.getServer(1);
-                    http.getServerSoon(1, 20210714);
-                    http.getServerAround(1, 37.49 ,126.83);
-                    http.getServerDetail(1);
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             weatherInt.setText(apiExplorer.getResult());
-                            setUpAdapter();
-                            NearsetUpAdapter();
-                            setUpInfo((ArrayList<Post>) http.getPostSoon());
-                            NearsetUpInfo((ArrayList<Post>) http.getPostAround());
                         }
                     });
                 }catch (Exception e){
@@ -141,12 +185,49 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-        //NearsetUpInfo();
-
-
-        //NearsetUpInfo();
-        //NearsetUpAdapter();
+        // 다가오는 라이딩 일정
+//        Executors.newSingleThreadExecutor().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    http = new HttpConnection();
+//                    http.getServerSoon(1, 20210714);
+//
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            setUpAdapter();
+//                            setUpInfo((ArrayList<Post>) http.getPostSoon());
+//                        }
+//                    });
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+        // 내 근처 라이딩
+//        Executors.newSingleThreadExecutor().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    http = new HttpConnection();
+//                    http.getServerAround(1, 37.49 ,126.83);
+//
+////                    http.getServer(1);
+////                    http.getServerDetail(1);
+//
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            NearsetUpAdapter();
+//                            NearsetUpInfo((ArrayList<Post>) http.getPostAround());
+//                        }
+//                    });
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
         if(!checkLocationServicesStatus()){ // 기기 gps 활성화 체크 , 비활성화 되어있는 경우
             showDialogForLocationServiceSetting(); // 기기 gps 활성화를 위한 Dialog
@@ -172,7 +253,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "현재위치 \n위도 " + latitude + "\n경도 " + longitude, Toast.LENGTH_LONG).show();
             }
         });
-
         test.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -181,21 +261,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         noticeButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "푸쉬알림", Toast.LENGTH_SHORT).show();
             }
         });
-
         userImg.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "내정보", Toast.LENGTH_SHORT).show();
             }
         });
-
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -203,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         inButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -248,7 +324,6 @@ public class MainActivity extends AppCompatActivity {
         SpannableString personcontent = new SpannableString(textview_address.getText().toString());
         personcontent.setSpan(new UnderlineSpan(), 0, personcontent.length(), 0);
         textview_address.setText(personcontent);
-
     }
 
     // 권한 획득
@@ -414,12 +489,7 @@ public class MainActivity extends AppCompatActivity {
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER); // 네트워크 프로바이더 사용 가능 여부
     }
 
-    private void setUpAdapter() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        uprecyclerView.setLayoutManager(layoutManager);
-        uprecyclerView.setItemAnimator(new DefaultItemAnimator());
-        uprecyclerView.setAdapter(upAdapter);
-    }
+    // UpRecyclerView 세팅
     private void setUpInfo(ArrayList<Post> data) {
         ArrayList<Post> postArrayList = data;
 
@@ -437,20 +507,14 @@ public class MainActivity extends AppCompatActivity {
 
             uparrayList.add(new UpcomingData(titletext, cruCnttext, startDate));
         }
-        upAdapter.setUpInfo(uparrayList);
     }
-    private void NearsetUpAdapter() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        nearrecyclerView.setLayoutManager(layoutManager);
-        nearrecyclerView.setItemAnimator(new DefaultItemAnimator());
-        nearrecyclerView.setAdapter(nearAdapter);
-    }
+    // NearRecyclerView 세팅
     private void NearsetUpInfo(ArrayList<Post> data) {
-
         ArrayList<Post> postArrayList = data;
 
         for (int i = 0; i < postArrayList.size(); i++){
 
+            int id = postArrayList.get(i).id;
             String titletext = postArrayList.get(i).title;
             String cruCnttext = "";
             if (postArrayList.get(i).cruCnt == -1){
@@ -461,8 +525,7 @@ public class MainActivity extends AppCompatActivity {
             String startDate = postArrayList.get(i).startDate;
             startDate = startDate.substring(0, startDate.indexOf(" "));
 
-            neararrayList.add(new NearData(titletext, cruCnttext, startDate));
+            neararrayList.add(new NearData(id, titletext, cruCnttext, startDate));
         }
-        nearAdapter.NearsetUpInfo(neararrayList);
     }
 }

@@ -32,6 +32,7 @@ public class NearAdapter extends RecyclerView.Adapter<NearAdapter.CustomViewHold
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull NearAdapter.CustomViewHolder holder, int position) {
+        holder.id = NeararrayList.get(position).getId();
         holder.NearTitle.setText(NeararrayList.get(position).getNearTitle());
         holder.NearTeam.setText(NeararrayList.get(position).getNearTeam());
         holder.NearDate.setText(NeararrayList.get(position).getNearDate());
@@ -40,8 +41,8 @@ public class NearAdapter extends RecyclerView.Adapter<NearAdapter.CustomViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String curTitle = holder.NearTitle.getText().toString();
-                Toast.makeText(v.getContext(), curTitle, Toast.LENGTH_SHORT).show();
+                int idnum = holder.id;
+                Toast.makeText(v.getContext(), String.valueOf(idnum), Toast.LENGTH_SHORT).show();
 
                 // id 값으로 모임 상세 페이지 호출
 
@@ -61,6 +62,7 @@ public class NearAdapter extends RecyclerView.Adapter<NearAdapter.CustomViewHold
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
+        protected int id;
         protected TextView NearTitle;
         protected TextView NearTeam;
         protected TextView NearDate;

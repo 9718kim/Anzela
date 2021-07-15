@@ -51,6 +51,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter<UpcomingAdapter.Custom
     }
 
     public void setUpInfo(ArrayList<UpcomingData> data) {
+        arrayList = data;
         notifyDataSetChanged();
     }
 

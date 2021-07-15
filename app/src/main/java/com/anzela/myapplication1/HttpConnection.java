@@ -34,6 +34,7 @@ public class HttpConnection {
 
         JSONObject jsonObj_2 = new JSONObject(data);
         JSONArray jsonArray = jsonObj_2.getJSONArray("content");
+        Log.d("TEST>>"  , "near json array : " + jsonArray.length());
 
         for(int i = 0; i < jsonArray.length(); i++) {
             jsonObj_2 = jsonArray.getJSONObject(i);
@@ -85,6 +86,7 @@ public class HttpConnection {
             String regDate = jsonObj_2.getString("regDate");
 
             PostListAround.add(new Post(id, title, content, cruCnt, startDate, startPoint, startLat, startLng, endPoint, endLat, endLng, cmtCnt, regDate));
+            Log.d("TEST>>"  , "near list check size : " + PostListAround.size());
         }
     }
 
@@ -99,6 +101,7 @@ public class HttpConnection {
         JSONObject jsonObj_2 = new JSONObject(data);
         JSONArray jsonArray = jsonObj_2.getJSONArray("content");
 
+        Log.d("TEST>>"  , "soon json array : " + jsonArray.length());
         for(int i = 0; i < jsonArray.length(); i++) {
             jsonObj_2 = jsonArray.getJSONObject(i);
 
@@ -117,6 +120,8 @@ public class HttpConnection {
             String regDate = jsonObj_2.getString("regDate");
 
             PostListSoon.add(new Post(id, title, content, cruCnt, startDate, startPoint, startLat, startLng, endPoint, endLat, endLng, cmtCnt, regDate));
+            Log.d("TEST>>"  , "soon list check size : " + PostListSoon.size());
+
         }
     }
 
@@ -209,10 +214,10 @@ public class HttpConnection {
         return PostList;
     }
 
-    public Object getPostAround() {
+    public ArrayList<Post> getPostAround() {
         return PostListAround;
     }
-    public Object getPostSoon() {
+    public ArrayList<Post> getPostSoon() {
         return PostListSoon;
     }
     public Object getBoardDetail() {
