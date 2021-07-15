@@ -17,7 +17,8 @@ public class HttpConnection {
     private ArrayList<Post> PostList = new ArrayList<>();
     private ArrayList<Post> PostListAround = new ArrayList<>();
     private ArrayList<Post> PostListSoon = new ArrayList<>();
-    private ArrayList<Post> PostListDetail = new ArrayList<>();
+    private ArrayList<BoardDetail> BoardDetailList = new ArrayList<>();
+    private ArrayList<User> userList = new ArrayList<>();
 
 
     // 모임 리스트
@@ -121,11 +122,28 @@ public class HttpConnection {
     public void getServerDetail(int id) throws JSONException {
         ServerList("/api/v1/posts/", "" + id, "GET");
 
-        JSONObject jsonObj_1 = new JSONObject(result);
+        JSONObject jsonObj_result = new JSONObject(result);
         Log.e("getServerDetail_result", result);
-        JSONObject jsonObj_2 = jsonObj_1.getJSONObject("data");
+        String data = jsonObj_result.getString("data");
 
-        int id1 = jsonObj_2.getInt("id");
+        JSONObject jsonObj_data = new JSONObject(data);
+        String user = jsonObj_data.getString("user");
+
+        JSONObject jsonObj_user = new JSONObject(user);
+
+        String comments = jsonObj_data.getString("comments");
+        JSONArray jsonArray_comments = new JSONArray(comments);
+
+        //String subuser = jsonArray_comments
+
+
+
+
+        /*JSONObject jsonObj_user = jsonObj_2.getJSONObject("user");
+        JSONArray jsonArray_comments = jsonObj_2.getJSONArray("comments");
+        JSONObject jsonObj_5 = jsonArray_comments.getJSONObject(0);*/
+
+        /*int id1 = jsonObj_2.getInt("id");
         String title = jsonObj_2.getString("title");
         String content = jsonObj_2.getString("content");
         int cruCnt = jsonObj_2.getInt("cruCnt");
@@ -138,11 +156,13 @@ public class HttpConnection {
         String endLng = jsonObj_2.optString("endLng", "text on no value");
         int cmtCnt = jsonObj_2.getInt("cmtCnt");
         String regDate = jsonObj_2.getString("regDate");
-        String comments = jsonObj_2.optString("comments", "text on no value");
+        String uid = jsonObj_user.getString("uid");*/
 
-        //PostListDetail.add(new PostComments(id1, title, content, cruCnt, startDate, startPoint, startLat, startLng, endPoint, endLat, endLng, cmtCnt, regDate, comments));
+        //String comments = jsonObj_2.optString("comments", "text on no value");
 
-        Log.e("getServerDetail", PostListDetail.get(0).title);
+        //BoardDetailList.add(new BoardDetail(id1, title, content, cruCnt, startDate, startPoint, startLat, startLng, endPoint, endLat, endLng, cmtCnt, regDate, "", ""));
+
+        //Log.e("testtest", uid);
     }
 
     //받은 url과 method 서버 접속

@@ -14,13 +14,11 @@ public class BoardDetail {
     public String endLng;
     public int cmtCnt;
     public String regDate;
-    public String Comments;
-    public String user;
-
-
+    public User user;
+    public Comments Comments;
 
     public BoardDetail(int id, String title, String content, int cruCnt, String startDate, String startPoint, String startLat,
-                       String startLng, String endPoint, String endLat, String endLng, int cmtCnt, String regDate, String Comments, String user) {
+                       String startLng, String endPoint, String endLat, String endLng, int cmtCnt, String regDate, User user, Comments Comments) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -34,8 +32,8 @@ public class BoardDetail {
         this.endLng = endLng;
         this.cmtCnt = cmtCnt;
         this.regDate = regDate;
-        this.Comments = Comments;
         this.user = user;
+        this.Comments = Comments;
     }
 
     public int getId() {
@@ -142,19 +140,19 @@ public class BoardDetail {
         this.regDate = regDate;
     }
 
-    public String getComments() {
-        return Comments;
-    }
-
-    public void setComments(String comments) {
-        Comments = comments;
-    }
-
-    public String getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(User user) {
         this.user = user;
+    }
+
+    public Comments getComments() {
+        return Comments;
+    }
+
+    public void setComments(Comments comments) {
+        Comments = comments;
     }
 }
