@@ -28,6 +28,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    public double Sla = 0;
+    public double Slo = 0;
+    public double Ela = 0;
+    public double Elo = 0;
     private BoardDetail boardDetail;
 
     ImageView backButton;
@@ -108,34 +112,39 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-
-        LatLng startPoitn = new LatLng(37.49492908756368, 126.83953848543452);
+        LatLng camera;
+//        LatLng startPoitn = new LatLng(37.49492908756368, 126.83953848543452);
+        LatLng startPoitn = new LatLng(Sla, Slo);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(startPoitn);
         markerOptions.title("출발지");
-        markerOptions.snippet("언라이크");
+        markerOptions.snippet("");
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_start_marker));
         mMap.addMarker(markerOptions);
 
-        LatLng endPoint = new LatLng(37.498313171135756, 126.85429685581971);
-        MarkerOptions markerOptions2 = new MarkerOptions();
-        markerOptions2.position(endPoint);
-        markerOptions2.title("도착지");
-        markerOptions2.snippet("경인중학교");
-        markerOptions2.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_end_marker));
-        mMap.addMarker(markerOptions2);
+        if (Ela == 0 && Elo == 0){
+            camera = new LatLng(Sla, Slo);
+        }else{
+            LatLng endPoint = new LatLng(Ela, Elo);
+            MarkerOptions markerOptions2 = new MarkerOptions();
+            markerOptions2.position(endPoint);
+            markerOptions2.title("도착지");
+            markerOptions2.snippet("");
+            markerOptions2.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_end_marker));
+            mMap.addMarker(markerOptions2);
 
-        LatLng camera = new LatLng(37.4976211293, 126.846917671);
+            camera = new LatLng((Sla + Ela)/2, (Slo + Elo)/2);
+        }
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(camera, 14));
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(camera, 10));
     }
 
     // 받은 data로 화면 구성
@@ -182,6 +191,14 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
         DetailText.setText(boardDetail.getContent());
 
+        Sla = Double.parseDouble(boardDetail.getStartLat());
+        Slo = Double.parseDouble(boardDetail.getStartLng());
+        if (!boardDetail.getEndPoint().equals("text on no value")){
+            Ela = Double.parseDouble(boardDetail.getEndLat());
+            Elo = Double.parseDouble(boardDetail.getEndLng());
+        }
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 }

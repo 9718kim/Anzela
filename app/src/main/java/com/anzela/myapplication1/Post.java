@@ -15,6 +15,8 @@ public class Post {
     public int cmtCnt;
     public String regDate;
 
+    public Post() {}
+
     public Post(int id, String title, String content, int cruCnt, String startDate, String startPoint, String startLat,
                 String startLng, String endPoint, String endLat, String endLng, int cmtCnt, String regDate) {
         this.id = id;

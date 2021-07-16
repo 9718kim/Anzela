@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -24,11 +25,16 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.Executors;
 
 public class WriteActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     boolean complete_check = false;
+    int maxnum = 0;
+    String checkDate = "";
     TextView dueDate;
     TextView maxPerson;
     TextView completeButton;
@@ -68,6 +74,7 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         endPLine = findViewById(R.id.endPline);
         detailLine = findViewById(R.id.detailline);
 
+
         editDialog = new Dialog(WriteActivity.this);
         editDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         editDialog.setContentView(R.layout.editdialog);
@@ -94,6 +101,31 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
             public void onClick(View view) {
                 if (complete_check){
                     Toast.makeText(WriteActivity.this, "SAVE" ,Toast.LENGTH_LONG).show();
+                    // 글 작성
+                    Log.e("writetest", titleText.getText().toString());
+                    Executors.newSingleThreadExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                HttpConnection http = new HttpConnection();
+                                Post post = new Post();
+                                post.setTitle(titleText.getText().toString());
+                                post.setContent(detailText.getText().toString());
+                                post.setCruCnt(maxnum);
+                                post.setStartDate(checkDate);
+                                post.setStartPoint(startPText.getText().toString());
+
+                                String endPoint = endPText.getText().toString();
+                                if (!endPoint.isEmpty()) {
+                                    post.setEndPoint(endPoint);
+                                }
+                                http.WriteServer(post);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
                     onBackPressed();
                 }else {
                     showerrorDialog();
@@ -166,7 +198,7 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         dueDate.setText(datecontent);
 
         //SpannableString personcontent = new SpannableString("personcontent");
-        SpannableString personcontent = new SpannableString("총 2명");
+        SpannableString personcontent = new SpannableString("총 0명");
         personcontent.setSpan(new UnderlineSpan(), 0, personcontent.length(), 0);
         maxPerson.setText(personcontent);
 
@@ -178,6 +210,8 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
                 clear();
             }
         });
+
+
 
         maxPerson.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -285,12 +319,16 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         teamDialog.findViewById(R.id.yesButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!(maxTeam.getText().toString().equals("") || maxTeam.getText() == null)){
+                    maxnum = Integer.parseInt(maxTeam.getText().toString());
+                    SpannableString personcontent = new SpannableString("총 " + maxTeam.getText().toString()+"명");
+                    personcontent.setSpan(new UnderlineSpan(), 0, personcontent.length(), 0);
+                    maxPerson.setText(personcontent);
 
-                SpannableString personcontent = new SpannableString("총 " + maxTeam.getText().toString()+"명");
-                personcontent.setSpan(new UnderlineSpan(), 0, personcontent.length(), 0);
-                maxPerson.setText(personcontent);
-
-                teamDialog.dismiss();
+                    teamDialog.dismiss();
+                }else {
+                    Toast.makeText(WriteActivity.this, "인원 수를 입력하세요." ,Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -305,5 +343,21 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         datecontent.setSpan(new UnderlineSpan(), 0, datecontent.length(), 0);
         dueDate = findViewById(R.id.duedate);
         dueDate.setText(datecontent);
+
+/*        String Smonth = "";
+        String Sday = "";
+        if (month + 1 < 10){
+            Smonth = "0" + (month + 1);
+        }else{
+            Smonth = String.valueOf(month + 1);
+        }
+        if (dayOfMonth < 10){
+            Sday = "0" + dayOfMonth;
+        }else{
+            Sday = String.valueOf(dayOfMonth);
+        }
+        checkDate = year + Smonth + Sday + "000000";*/
+        checkDate = String.format("%d%d%d000000", year,month+1,dayOfMonth);
+        Log.e("date-test", checkDate);
     }
 }

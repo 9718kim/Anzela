@@ -1,11 +1,15 @@
 package com.anzela.myapplication1;
 
 import android.util.Log;
+
+import com.google.gson.JsonObject;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -20,6 +24,21 @@ public class HttpConnection {
     private BoardDetail BoardDetail= new BoardDetail();
     private ArrayList<Comments> commentsList= new ArrayList();
 
+    // 모임 글 작성
+    public void WriteServer(Post post) {
+        JsonObject jsonObj = new JsonObject();
+        jsonObj.addProperty("title", post.getTitle());
+        jsonObj.addProperty("content", post.getContent());
+        jsonObj.addProperty("cruCnt", post.getCruCnt());
+        jsonObj.addProperty("startDate", post.getStartDate());
+        jsonObj.addProperty("startPoint", post.getStartPoint());
+        jsonObj.addProperty("endPoint", post.getEndPoint());
+
+        String jsonReq = jsonObj.toString();
+        Log.e("req-test", jsonReq);
+        ServerList("/api/v1/posts", jsonReq, "POST");
+        Log.e("WriteServer_result", result);
+    }
 
     // 모임 리스트
     public void getServer(int page) throws JSONException {
@@ -32,7 +51,6 @@ public class HttpConnection {
 
         JSONObject jsonObj_2 = new JSONObject(data);
         JSONArray jsonArray = jsonObj_2.getJSONArray("content");
-        Log.d("TEST>>"  , "near json array : " + jsonArray.length());
 
         for(int i = 0; i < jsonArray.length(); i++) {
             jsonObj_2 = jsonArray.getJSONObject(i);
@@ -175,22 +193,37 @@ public class HttpConnection {
         Log.e("Test", BoardDetail.getContent());
     }
 
-    //받은 url과 method 서버 접속
+    //받은 url, req, method 서버 접속
     public void ServerList(String uri, String req, String method){
         String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZW9ra2kiLCJpYXQiOjE2MjUwNDE2MjcsImV4cCI6MTY1NjU3NzYyN30.WkvbmVouJNTkdP9ckqYrAlufLbSL09354NKAT6F8ZIw";
         String header = "Bearer " + token;
         try {
             StringBuilder urlBuilder = new StringBuilder("http://15.165.35.47" + uri); //"http://15.165.35.47/api/v1/posts"
-            urlBuilder.append(req); /*페이지번호*/
+            if (method.equals("GET")){
+                urlBuilder.append(req); // req
+            }
             URL url = new URL(urlBuilder.toString());
 //            Log.e("URL-TAG", "url=" + urlBuilder.toString() );
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
             con.setRequestMethod(method); // "GET" or "POST"
             con.setRequestProperty("Authorization", header);
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+
+            if(method.equals("POST")){
+                con.setDoOutput(true); // POST 파라미터 전달을 위한 설정
+
+                // post방식으로 req 전달할 때 필요
+                DataOutputStream dataout = new DataOutputStream(con.getOutputStream());
+                dataout.writeBytes(req);
+                dataout.flush();
+                dataout.close();
+
+            }
             int responseCode = con.getResponseCode();
             BufferedReader br;
             if(responseCode==200) { // 정상 호출
-                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                br = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
                 Log.e("TAG200", urlBuilder.toString());
             } else {  // 에러 발생
                 br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
