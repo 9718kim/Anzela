@@ -18,9 +18,7 @@ public class HttpConnection {
     private ArrayList<Post> PostListAround = new ArrayList<>();
     private ArrayList<Post> PostListSoon = new ArrayList<>();
     private BoardDetail BoardDetail= new BoardDetail();
-    private ArrayList<User> userList = new ArrayList<>();
     private ArrayList<Comments> commentsList= new ArrayList();
-    private ArrayList<User> subuserList = new ArrayList<>();
 
 
     // 모임 리스트
@@ -185,7 +183,7 @@ public class HttpConnection {
             StringBuilder urlBuilder = new StringBuilder("http://15.165.35.47" + uri); //"http://15.165.35.47/api/v1/posts"
             urlBuilder.append(req); /*페이지번호*/
             URL url = new URL(urlBuilder.toString());
-            //Log.e("URL-TAG", "url=" + urlBuilder.toString() );
+//            Log.e("URL-TAG", "url=" + urlBuilder.toString() );
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
             con.setRequestMethod(method); // "GET" or "POST"
             con.setRequestProperty("Authorization", header);

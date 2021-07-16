@@ -1,5 +1,7 @@
 package com.anzela.myapplication1;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +34,7 @@ public class NearAdapter extends RecyclerView.Adapter<NearAdapter.CustomViewHold
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull NearAdapter.CustomViewHolder holder, int position) {
+
         holder.id = NeararrayList.get(position).getId();
         holder.NearTitle.setText(NeararrayList.get(position).getNearTitle());
         holder.NearTeam.setText(NeararrayList.get(position).getNearTeam());
@@ -42,10 +45,12 @@ public class NearAdapter extends RecyclerView.Adapter<NearAdapter.CustomViewHold
             @Override
             public void onClick(View v) {
                 int idnum = holder.id;
-                Toast.makeText(v.getContext(), String.valueOf(idnum), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(v.getContext(), String.valueOf(idnum), Toast.LENGTH_SHORT).show();
 
                 // id 값으로 모임 상세 페이지 호출
-
+                Intent intent = new Intent(v.getContext(), DetailActivity.class);
+                intent.putExtra("idnum", idnum);
+                v.getContext().startActivity(intent);
             }
         });
     }

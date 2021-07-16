@@ -127,8 +127,6 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            setUpAdapter();
-                            Log.d("TEST>>" , "Soon LIST SETUp : " + http.getPostSoon().size());
                             setUpInfo((ArrayList<Post>) http.getPostSoon());
                             upAdapter.notifyDataSetChanged();
                         }
@@ -153,10 +151,7 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             Log.d("TEST>>" , "NEAR LIST SETUp : " + http.getPostAround().size());
                             NearsetUpInfo((ArrayList<Post>) http.getPostAround());
-                            //neararrayList = http.getPostAround();
-
                             nearAdapter.notifyDataSetChanged();
-
                         }
                     });
                 }catch (Exception e){

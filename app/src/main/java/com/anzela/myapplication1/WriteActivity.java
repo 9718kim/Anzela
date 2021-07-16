@@ -7,11 +7,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -23,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
@@ -60,7 +56,7 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         backButton = findViewById(R.id.backpressed);
         completeButton = findViewById(R.id.complete);
         dueDate = findViewById(R.id.duedate);
-        maxPerson = findViewById(R.id.maxperson);
+        maxPerson = findViewById(R.id.detailmaxperson);
         endPCheck = findViewById(R.id.endPcheck);
         endDetail = findViewById(R.id.enddetail);
         titleText = findViewById(R.id.titleBox);
