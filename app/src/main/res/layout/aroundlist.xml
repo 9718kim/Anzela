@@ -48,7 +48,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="28dp"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                android:id="@+id/top2">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -78,53 +79,56 @@
                     android:id="@+id/area"
                     android:text="서울시 구로구"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
-            <!--<fragment
-                android:layout_width=""
-                android:layout_height=""/>-->
-
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toBottomOf="@+id/top2"
+                android:layout_marginTop="16dp"
+                android:id="@+id/nearrv"
+                android:visibility="visible"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toBottomOf="@id/scroll"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="80dp"
-        android:textStyle="normal"
-        android:textSize="16dp"
-        android:textColor="@color/white"
-        android:lineSpacingExtra="4dp"
-        android:gravity="center_horizontal"
-        android:text="아직 모집글이 없습니다.\n직접 글을 작성해보세요👍🏻"
-        android:id="@+id/text1"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        app:layout_constraintTop_toBottomOf="@id/text1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/radius37_black_five"
-        android:textStyle="normal"
-        android:textSize="16dp"
-        android:textColor="@color/white"
-        android:gravity="center"
-        android:text="모집 글 작성하기"
-        android:id="@+id/writebig"/>
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:scaleType="fitXY"
-        android:src="@drawable/bg_scooter_illust"
-        tools:ignore="MissingConstraints" />
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="182dp"
+            android:textStyle="normal"
+            android:textSize="16dp"
+            android:textColor="@color/white"
+            android:lineSpacingExtra="4dp"
+            android:gravity="center_horizontal"
+            android:text="아직 모집글이 없습니다.\n직접 글을 작성해보세요👍🏻"
+            android:id="@+id/text1"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:layout_constraintTop_toBottomOf="@id/text1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/radius37_black_five"
+            android:textStyle="normal"
+            android:textSize="16dp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:text="모집 글 작성하기"
+            android:id="@+id/writebig"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/bg_scooter_illust"
+            tools:ignore="MissingConstraints" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--
-    <androidx.recyclerview.widget.RecyclerView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:layout_editor_absoluteX="1dp"
-    tools:layout_editor_absoluteY="1dp"/>-->

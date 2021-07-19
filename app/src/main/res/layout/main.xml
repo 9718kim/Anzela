@@ -161,17 +161,6 @@
                         android:overScrollMode="never"
                         android:id="@+id/comingrv"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@color/white"
-                    app:layout_constraintTop_toTopOf="@id/upcoming_box"
-                    app:layout_constraintEnd_toEndOf="@id/upcoming_box"
-                    android:text="detail"
-                    android:textColor="@color/black"
-                    android:id="@+id/test1"/>
-
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

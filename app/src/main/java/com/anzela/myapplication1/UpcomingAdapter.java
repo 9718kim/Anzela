@@ -1,5 +1,6 @@
 package com.anzela.myapplication1;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,8 @@ public class UpcomingAdapter extends RecyclerView.Adapter<UpcomingAdapter.Custom
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull UpcomingAdapter.CustomViewHolder holder, int position) {
+
+        holder.id = arrayList.get(position).getId();
         holder.Title.setText(arrayList.get(position).getTitle());
         holder.Team.setText(arrayList.get(position).getTeam());
         holder.Date.setText(arrayList.get(position).getDate());
@@ -39,8 +42,13 @@ public class UpcomingAdapter extends RecyclerView.Adapter<UpcomingAdapter.Custom
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String curTitle = holder.Title.getText().toString();
-                Toast.makeText(v.getContext(), curTitle, Toast.LENGTH_SHORT).show();
+                int idnum = holder.id;
+//                Toast.makeText(v.getContext(), String.valueOf(idnum), Toast.LENGTH_SHORT).show();
+
+                // id 값으로 모임 상세 페이지 호출
+                Intent intent = new Intent(v.getContext(), DetailActivity.class);
+                intent.putExtra("idnum", idnum);
+                v.getContext().startActivity(intent);
             }
         });
     }
@@ -57,6 +65,7 @@ public class UpcomingAdapter extends RecyclerView.Adapter<UpcomingAdapter.Custom
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
+        protected int id;
         protected TextView Title;
         protected TextView Team;
         protected TextView Date;

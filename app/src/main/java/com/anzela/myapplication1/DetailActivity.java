@@ -3,6 +3,7 @@ package com.anzela.myapplication1;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,7 +40,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     View commentButton;
     ImageView commentImg;
 
-
     TextView Title;
     CircleImageView UserImg;
     TextView UserName;
@@ -49,6 +49,8 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     TextView StartDetail;
     TextView EndDetail;
     TextView DetailText;
+
+    TextView Modify;
 
 
     @Override
@@ -61,7 +63,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         commentButton = findViewById(R.id.commentBtn);
         commentImg = findViewById(R.id.commentimg);
 
-
         Title = findViewById(R.id.detailtitle);
         UserImg = findViewById(R.id.userimg);
         UserName = findViewById(R.id.username);
@@ -72,6 +73,8 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         EndDetail = findViewById(R.id.enddetail);
         DetailText = findViewById(R.id.detailtext);
 
+        Modify = findViewById(R.id.modify);
+
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -79,11 +82,12 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                     int id = getIntent().getIntExtra("idnum", 0);
                     HttpConnection http = new HttpConnection();
                     http.getServerDetail(id);
+                    boardDetail = (BoardDetail) http.getBoardDetail();
                     Log.e("Detail-text", "bbb");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            setting((BoardDetail) http.getBoardDetail());
+                            setting(boardDetail);
                         }
                     });
                 }catch (Exception e){
@@ -112,7 +116,16 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
-
+        Modify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int idnum = getIntent().getIntExtra("idnum", 0);
+                Intent intent = new Intent(getApplicationContext(), WriteActivity.class);
+                intent.putExtra("id", idnum);
+//                intent.putExtra("data", boardDetail);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

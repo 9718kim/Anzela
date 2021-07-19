@@ -12,16 +12,14 @@ import java.util.ArrayList;
 
 public class TimeLineListActivity extends AppCompatActivity {
 
-    private ArrayList<UpcomingData> uparrayList;
-    private UpcomingAdapter upAdapter;
-    private RecyclerView uprecyclerView;
-    private LinearLayoutManager uplinearLayoutManager;
+    private ArrayList<NearData> neararrayList;
+    private NearAdapter nearAdapter;
+    private RecyclerView nearrecyclerView;
+    private LinearLayoutManager nearlinearLayoutManager;
 
     ImageView backButton;
     TextView writeButton;
-    //TextView writebigButton;
-
-    /*ConstraintLayout Item1;*/
+    TextView writebigButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,20 +28,36 @@ public class TimeLineListActivity extends AppCompatActivity {
 
         backButton = findViewById(R.id.backpressed);
         writeButton = findViewById(R.id.write);
+        writebigButton = findViewById(R.id.writebig);
 
-        /*Item1 = findViewById(R.id.item1);*/
-        //writebigButton = findViewById(R.id.writebig);
+        nearrecyclerView = (RecyclerView)findViewById(R.id.comingrv);
+        nearlinearLayoutManager = new LinearLayoutManager(this);
+        nearrecyclerView.setLayoutManager(nearlinearLayoutManager);
+        neararrayList = new ArrayList<>();
+        nearAdapter = new NearAdapter(neararrayList);
+        nearrecyclerView.setAdapter(nearAdapter);
 
-/*        uprecyclerView = (RecyclerView)findViewById(R.id.comingrv);
-        uplinearLayoutManager = new LinearLayoutManager(this);
-        uprecyclerView.setLayoutManager(uplinearLayoutManager);
+        Thread thread1 = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    HttpConnection http = new HttpConnection();
+                    http.getServerSoon(1, 20210714);
 
-        uparrayList = new ArrayList<>();
-        upAdapter = new UpcomingAdapter(uparrayList);
-        uprecyclerView.setAdapter(upAdapter);
-
-        setUpInfo();
-        setUpAdapter();*/
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            NearsetUpInfo((ArrayList<Post>) http.getPostSoon());
+                            nearAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread1.start();
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,33 +73,32 @@ public class TimeLineListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        /*Item1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Item1.setSelected(true);
-                Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-                startActivity(intent);
-            }
-        });*/
-/*        writebigButton.setOnClickListener(new View.OnClickListener() {
+        writebigButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 writebigButton.setSelected(true);
                 Intent intent = new Intent(getApplicationContext(), WriteActivity.class);
                 startActivity(intent);
             }
-        });*/
+        });
     }
-/*    private void setUpAdapter() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        uprecyclerView.setLayoutManager(layoutManager);
-        uprecyclerView.setItemAnimator(new DefaultItemAnimator());
-        uprecyclerView.setAdapter(upAdapter);
-    }
-    private void setUpInfo() {
-        uparrayList.add(new UpcomingData("목감천 라이딩해요", "최대 4명", "2021.01.31"));
-        uparrayList.add(new UpcomingData("동양공전 근처에서 만나요", "최대 4명", "2021.01.31"));
+    private void NearsetUpInfo(ArrayList<Post> data) {
+        ArrayList<Post> postArrayList = data;
 
-        upAdapter.setUpInfo(uparrayList);
-    }*/
+        for (int i = 0; i < postArrayList.size(); i++){
+
+            int id = postArrayList.get(i).id;
+            String titletext = postArrayList.get(i).title;
+            String cruCnttext = "";
+            if (postArrayList.get(i).cruCnt == -1){
+                cruCnttext = "제한없음";
+            } else {
+                cruCnttext = "최대 " + postArrayList.get(i).cruCnt + "명";
+            }
+            String startDate = postArrayList.get(i).startDate;
+            startDate = startDate.substring(0, startDate.indexOf(" "));
+
+            neararrayList.add(new NearData(id, titletext, cruCnttext, startDate));
+        }
+    }
 }

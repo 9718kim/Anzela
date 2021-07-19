@@ -35,6 +35,7 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
     boolean complete_check = false;
     int maxnum = 0;
     String checkDate = "";
+    TextView PageText;
     TextView dueDate;
     TextView maxPerson;
     TextView completeButton;
@@ -53,6 +54,7 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
     Dialog errorDialog;
     Dialog teamDialog;
     InputMethodManager inputMethodManager;
+    BoardDetail boardDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,7 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         startPLine = findViewById(R.id.startPline);
         endPLine = findViewById(R.id.endPline);
         detailLine = findViewById(R.id.detailline);
-
+        PageText = findViewById(R.id.pageText);
 
         editDialog = new Dialog(WriteActivity.this);
         editDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -88,6 +90,34 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         teamDialog.setContentView(R.layout.teamdialog);
 
         inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        int id = getIntent().getIntExtra("id", 0);
+        Log.e("Write-test", String.valueOf(id));
+        if (!(id == 0)){
+//            int idnum = getIntent().getIntExtra("idnum", 0);
+//            String data = getIntent().getStringExtra("data");
+//            setting((BoardDetail) data);
+            Log.e("Write-test", String.valueOf(id));
+            Executors.newSingleThreadExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        HttpConnection http = new HttpConnection();
+                        http.getServerDetail(id);
+                        Log.e("Detail-text", "test1");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setting((BoardDetail) http.getBoardDetail());
+                            }
+                        });
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+        }
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -344,7 +374,7 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         dueDate = findViewById(R.id.duedate);
         dueDate.setText(datecontent);
 
-/*        String Smonth = "";
+        String Smonth = "";
         String Sday = "";
         if (month + 1 < 10){
             Smonth = "0" + (month + 1);
@@ -356,8 +386,14 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         }else{
             Sday = String.valueOf(dayOfMonth);
         }
-        checkDate = year + Smonth + Sday + "000000";*/
-        checkDate = String.format("%d%d%d000000", year,month+1,dayOfMonth);
+        checkDate = year + Smonth + Sday + "000000";
+//        checkDate = String.format("%d%d%d000000", year,month+1,dayOfMonth);
         Log.e("date-test", checkDate);
+    }
+    public void setting(BoardDetail data){
+//        PageText = findViewById(R.id.pageText);
+        Log.e("setting", "test");
+        boardDetail = data;
+        PageText.setText("글 수정");
     }
 }

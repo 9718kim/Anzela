@@ -2,15 +2,25 @@ package com.anzela.myapplication1;
 
 public class UpcomingData {
 
+    private int id;
     private String Title;
     private String Team;
     private String Date;
 
-    public UpcomingData(String Title, String Team, String Date) {
+    public UpcomingData(int id, String Title, String Team, String Date) {
+        this.id = id;
         this.Title = Title;
         this.Team = Team;
         this.Date = Date;
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

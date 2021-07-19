@@ -72,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
     TextView weatherInt;
     Dialog permissionDialog;
 
-    Button test;
-
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -112,8 +110,6 @@ public class MainActivity extends AppCompatActivity {
         permissionDialog = new Dialog(MainActivity.this);
         permissionDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         permissionDialog.setContentView(R.layout.permissiondialog);
-
-        test = findViewById(R.id.test1);
 
         // 날씨
         Thread thread1 = new Thread() {
@@ -246,14 +242,6 @@ public class MainActivity extends AppCompatActivity {
                 textview_address.setText(address);
 
                 Toast.makeText(MainActivity.this, "현재위치 \n위도 " + latitude + "\n경도 " + longitude, Toast.LENGTH_LONG).show();
-            }
-        });
-        test.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                test.setSelected(true);
-                Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-                startActivity(intent);
             }
         });
         noticeButton.setOnClickListener(new View.OnClickListener(){
@@ -490,6 +478,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < postArrayList.size(); i++){
 
+            int id = postArrayList.get(i).id;
             String titletext = postArrayList.get(i).title;
             String cruCnttext = "";
             if (postArrayList.get(i).cruCnt == -1){
@@ -500,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
             String startDate = postArrayList.get(i).startDate;
             startDate = startDate.substring(0, startDate.indexOf(" "));
 
-            uparrayList.add(new UpcomingData(titletext, cruCnttext, startDate));
+            uparrayList.add(new UpcomingData(id, titletext, cruCnttext, startDate));
         }
     }
     // NearRecyclerView 세팅

@@ -322,13 +322,13 @@
             android:textColor="@color/white"
             android:gravity="center"
             android:text="수정하기"
-            android:id="@+id/asd"/>
+            android:id="@+id/modify"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="62dp"
             android:layout_weight="7"
             android:background="@color/aqua_marine"
-            app:layout_constraintStart_toEndOf="@id/asd"
+            app:layout_constraintStart_toEndOf="@id/modify"
             android:textStyle="bold"
             android:textSize="16dp"
             android:textColor="@color/white"
