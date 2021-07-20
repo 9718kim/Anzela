@@ -6,6 +6,8 @@ import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.anzela.myapplication1.Activity.MainActivity;
+
 public class SplashActivity extends AppCompatActivity {
 
 

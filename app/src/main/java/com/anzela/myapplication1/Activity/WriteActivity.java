@@ -1,4 +1,4 @@
-package com.anzela.myapplication1;
+package com.anzela.myapplication1.Activity;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -24,6 +24,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
+import com.anzela.myapplication1.BoardDetail;
+import com.anzela.myapplication1.DatePickerFragment;
+import com.anzela.myapplication1.HttpConnection;
+import com.anzela.myapplication1.Post;
+import com.anzela.myapplication1.R;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,7 +45,7 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
     TextView dueDate;
     TextView maxPerson;
     TextView completeButton;
-    TextView endDetail;
+//    TextView endDetail;
     ImageView backButton;
     CheckBox endPCheck;
     EditText titleText;
@@ -66,7 +72,7 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         dueDate = findViewById(R.id.duedate);
         maxPerson = findViewById(R.id.detailmaxperson);
         endPCheck = findViewById(R.id.endPcheck);
-        endDetail = findViewById(R.id.enddetail);
+//        endDetail = findViewById(R.id.enddetail);
         titleText = findViewById(R.id.titleBox);
         startPText = findViewById(R.id.startP);
         detailText = findViewById(R.id.detailtext);
@@ -93,10 +99,7 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
 
         int id = getIntent().getIntExtra("id", 0);
         Log.e("Write-test", String.valueOf(id));
-        if (!(id == 0)){
-//            int idnum = getIntent().getIntExtra("idnum", 0);
-//            String data = getIntent().getStringExtra("data");
-//            setting((BoardDetail) data);
+        if (id != 0){
             Log.e("Write-test", String.valueOf(id));
             Executors.newSingleThreadExecutor().execute(new Runnable() {
                 @Override
@@ -119,6 +122,12 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
             });
         }
 
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMdd000000");
+        String getDate = simpleDate.format(date);
+        checkDate = getDate;
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,6 +135,42 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
             }
         });
 
+//        completeButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (complete_check){
+//                    Toast.makeText(WriteActivity.this, "SAVE" ,Toast.LENGTH_LONG).show();
+//                    // 글 작성
+//
+//                    Executors.newSingleThreadExecutor().execute(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                HttpConnection http = new HttpConnection();
+//                                Post post = new Post();
+//                                post.setTitle(titleText.getText().toString());
+//                                post.setContent(detailText.getText().toString());
+//                                post.setCruCnt(maxnum);
+//                                post.setStartDate(checkDate);
+//                                post.setStartPoint(startPText.getText().toString());
+//
+//                                String endPoint = endPText.getText().toString();
+//                                if (!endPoint.isEmpty()) {
+//                                    post.setEndPoint(endPoint);
+//                                }
+//                                http.getServerModify(id, post);
+//                            }catch (Exception e){
+//                                e.printStackTrace();
+//                            }
+//
+//                        }
+//                    });
+//                    onBackPressed();
+//                }else {
+//                    showerrorDialog();
+//                }
+//            }
+//        });
         completeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -141,6 +186,9 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
                                 Post post = new Post();
                                 post.setTitle(titleText.getText().toString());
                                 post.setContent(detailText.getText().toString());
+                                if (maxnum == 0){
+                                    maxnum = -1;
+                                }
                                 post.setCruCnt(maxnum);
                                 post.setStartDate(checkDate);
                                 post.setStartPoint(startPText.getText().toString());
@@ -149,7 +197,11 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
                                 if (!endPoint.isEmpty()) {
                                     post.setEndPoint(endPoint);
                                 }
-                                http.WriteServer(post);
+                                if (id == 0){
+                                    http.WriteServer(post);
+                                }else {
+                                    http.getServerModify(id, post);
+                                }
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
@@ -200,10 +252,12 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
             @Override
             public void onClick(View v) {
                 if(endPCheck.isChecked()){
-                    endDetail.setTextColor(ContextCompat.getColor(WriteActivity.this, R.color.white));
+//                    endDetail.setTextColor(ContextCompat.getColor(WriteActivity.this, R.color.white));
+                    endPCheck.setTextColor(ContextCompat.getColor(WriteActivity.this, R.color.white));
                     endPText.setText("");
                 }else {
-                    endDetail.setTextColor(Color.parseColor("#848484"));
+//                    endDetail.setTextColor(Color.parseColor("#848484"));
+                    endPCheck.setTextColor(Color.parseColor("#848484"));
                 }
                 clear();
                 check();
@@ -221,9 +275,11 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
                 }
             }
         });
+        SimpleDateFormat simpleDate2 = new SimpleDateFormat("yyyy년 MM월 dd일");
+        String getDate2 = simpleDate2.format(date);
 
         //SpannableString content = new SpannableString("Content");
-        SpannableString datecontent = new SpannableString("2021년 06월 01일");
+        SpannableString datecontent = new SpannableString(getDate2);
         datecontent.setSpan(new UnderlineSpan(), 0, datecontent.length(), 0);
         dueDate.setText(datecontent);
 
@@ -391,9 +447,50 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         Log.e("date-test", checkDate);
     }
     public void setting(BoardDetail data){
-//        PageText = findViewById(R.id.pageText);
         Log.e("setting", "test");
         boardDetail = data;
         PageText.setText("글 수정");
+        titleText.setText(boardDetail.getTitle());
+
+        String str = boardDetail.startDate;
+        String yy = str.substring(0, 4);
+        String mm = str.substring(5, 7);
+        String dd = str.substring(8, 10);
+        String newdate = yy + "년 " + mm + "월 " + dd + "일";
+
+        SpannableString datecontent = new SpannableString(newdate);
+        datecontent.setSpan(new UnderlineSpan(), 0, datecontent.length(), 0);
+        dueDate.setText(datecontent);
+
+        int imm = Integer.parseInt(mm);
+        int idd = Integer.parseInt(dd);
+        String Smonth = "";
+        String Sday = "";
+        if (imm < 10){
+            Smonth = "0" + imm;
+        }else{
+            Smonth = String.valueOf(imm);
+        }
+        if (idd < 10){
+            Sday = "0" + idd;
+        }else{
+            Sday = String.valueOf(idd);
+        }
+        checkDate = yy + Smonth + Sday + "000000";
+
+        maxnum = boardDetail.getCruCnt();
+        SpannableString personcontent = new SpannableString("총 " + maxnum +"명");
+        personcontent.setSpan(new UnderlineSpan(), 0, personcontent.length(), 0);
+        maxPerson.setText(personcontent);
+
+        startPText.setText(boardDetail.getStartPoint());
+
+        if (boardDetail.getEndPoint() == "text on no value"){
+            endPCheck.isChecked();
+        }else{
+            endPText.setText(boardDetail.getEndPoint());
+        }
+
+        detailText.setText(boardDetail.getContent());
     }
 }

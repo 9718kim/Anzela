@@ -1,13 +1,13 @@
 package com.anzela.myapplication1;
 
 public class Comments {
-    public String id;
+    public int id;
     public String content;
-    public String depth;
+    public int depth;
     public String regDate;
     public User user;
 
-    public Comments(String id, String content, String depth, String regDate, User user) {
+    public Comments(int id, String content, int depth, String regDate, User user) {
         this.id = id;
         this.content = content;
         this.depth = depth;
@@ -15,11 +15,11 @@ public class Comments {
         this.user = user;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -31,11 +31,11 @@ public class Comments {
         this.content = content;
     }
 
-    public String getDepth() {
+    public int getDepth() {
         return depth;
     }
 
-    public void setDepth(String depth) {
+    public void setDepth(int depth) {
         this.depth = depth;
     }
 

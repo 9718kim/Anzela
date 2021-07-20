@@ -22,13 +22,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.anzela.myapplication1.MainActivity"/>
-        <activity android:name="com.anzela.myapplication1.AllListActivity"/>
-        <activity android:name="com.anzela.myapplication1.AroundListActivity"/>
-        <activity android:name="com.anzela.myapplication1.TimeLineListActivity"/>
-        <activity android:name="com.anzela.myapplication1.WriteActivity"/>
-        <activity android:name="com.anzela.myapplication1.DetailActivity"/>
-        <activity android:name="com.anzela.myapplication1.testActivity"/>
+        <activity android:name="com.anzela.myapplication1.Activity.MainActivity"/>
+        <activity android:name="com.anzela.myapplication1.Activity.AllListActivity"/>
+        <activity android:name="com.anzela.myapplication1.Activity.AroundListActivity"/>
+        <activity android:name="com.anzela.myapplication1.Activity.TimeLineListActivity"/>
+        <activity android:name="com.anzela.myapplication1.Activity.WriteActivity"/>
+        <activity android:name="com.anzela.myapplication1.Activity.DetailActivity"/>
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false"/>

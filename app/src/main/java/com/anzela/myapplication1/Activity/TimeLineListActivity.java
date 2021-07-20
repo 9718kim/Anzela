@@ -1,18 +1,25 @@
-package com.anzela.myapplication1;
+package com.anzela.myapplication1.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import com.anzela.myapplication1.HttpConnection;
+import com.anzela.myapplication1.NearAdapter;
+import com.anzela.myapplication1.NearData;
+import com.anzela.myapplication1.Post;
+import com.anzela.myapplication1.R;
 
-public class AllListActivity extends AppCompatActivity {
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+public class TimeLineListActivity extends AppCompatActivity {
 
     private ArrayList<NearData> neararrayList;
     private NearAdapter nearAdapter;
@@ -26,18 +33,23 @@ public class AllListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.alllist);
+        setContentView(R.layout.timelinelist);
 
         backButton = findViewById(R.id.backpressed);
         writeButton = findViewById(R.id.write);
         writebigButton = findViewById(R.id.writebig);
 
-        nearrecyclerView = (RecyclerView)findViewById(R.id.allrv);
+        nearrecyclerView = (RecyclerView)findViewById(R.id.comingrv);
         nearlinearLayoutManager = new LinearLayoutManager(this);
         nearrecyclerView.setLayoutManager(nearlinearLayoutManager);
         neararrayList = new ArrayList<>();
         nearAdapter = new NearAdapter(neararrayList);
         nearrecyclerView.setAdapter(nearAdapter);
+
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMdd");
+        int getDate = Integer.parseInt(simpleDate.format(date));
 
         Thread thread1 = new Thread() {
             @Override
@@ -45,12 +57,12 @@ public class AllListActivity extends AppCompatActivity {
                 super.run();
                 try {
                     HttpConnection http = new HttpConnection();
-                    http.getServer(1);
+                    ArrayList<Post> post = http.getServerSoon(1, getDate);
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            NearsetUpInfo((ArrayList<Post>) http.getPost());
+                            NearsetUpInfo(post);
                             nearAdapter.notifyDataSetChanged();
                         }
                     });

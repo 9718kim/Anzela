@@ -1,4 +1,4 @@
-package com.anzela.myapplication1;
+package com.anzela.myapplication1.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,9 +10,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.anzela.myapplication1.GpsTracker;
+import com.anzela.myapplication1.HttpConnection;
+import com.anzela.myapplication1.NearAdapter;
+import com.anzela.myapplication1.NearData;
+import com.anzela.myapplication1.Post;
+import com.anzela.myapplication1.R;
+
 import java.util.ArrayList;
 
 public class AroundListActivity extends AppCompatActivity {
+
+    private GpsTracker gpsTracker;
 
     private ArrayList<NearData> neararrayList;
     private NearAdapter nearAdapter;
@@ -39,18 +48,23 @@ public class AroundListActivity extends AppCompatActivity {
         nearAdapter = new NearAdapter(neararrayList);
         nearrecyclerView.setAdapter(nearAdapter);
 
+        gpsTracker = new GpsTracker(AroundListActivity.this);
+
+        double latitude = gpsTracker.getLatitude();
+        double longitude = gpsTracker.getLongitude();
+
         Thread thread1 = new Thread() {
             @Override
             public void run() {
                 super.run();
                 try {
                     HttpConnection http = new HttpConnection();
-                    http.getServerAround(1, 37.49 ,126.83);
+                    ArrayList<Post> post = http.getServerAround(1, latitude ,longitude);
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            NearsetUpInfo((ArrayList<Post>) http.getPostAround());
+                            NearsetUpInfo(post);
                             nearAdapter.notifyDataSetChanged();
                         }
                     });

@@ -19,7 +19,9 @@ public class BoardDetail {
     public User user;
     public ArrayList<Comments> Comments;
 
-    public BoardDetail() {
+    public BoardDetail(){}
+
+    public BoardDetail(int id, String content, int depth, String regDate, String uid, String profileUrl) {
     }
 
     public BoardDetail(int id, String title, String content, int cruCnt, String startDate, String startPoint, String startLat, String startLng, String endPoint, String endLat, String endLng, int cmtCnt, String regDate, User user, ArrayList<com.anzela.myapplication1.Comments> comments) {

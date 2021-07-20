@@ -1,5 +1,7 @@
 package com.anzela.myapplication1;
 
+import java.util.ArrayList;
+
 public class Post {
     public int id;
     public String title;
@@ -14,6 +16,8 @@ public class Post {
     public String endLng;
     public int cmtCnt;
     public String regDate;
+    private User user;
+    private ArrayList<Comments> comments;
 
     public Post() {}
 

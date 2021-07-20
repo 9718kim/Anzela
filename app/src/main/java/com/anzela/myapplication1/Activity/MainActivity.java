@@ -1,8 +1,7 @@
-package com.anzela.myapplication1;
+package com.anzela.myapplication1.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
@@ -15,12 +14,21 @@ import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.google.android.material.navigation.NavigationView;
-import com.google.gson.JsonArray;
 
+import com.anzela.myapplication1.ApiExplorer;
+import com.anzela.myapplication1.GpsTracker;
+import com.anzela.myapplication1.HttpConnection;
+import com.anzela.myapplication1.NearAdapter;
+import com.anzela.myapplication1.NearData;
+import com.anzela.myapplication1.Post;
+import com.anzela.myapplication1.R;
+import com.anzela.myapplication1.UpcomingAdapter;
+import com.anzela.myapplication1.UpcomingData;
+import com.google.android.material.navigation.NavigationView;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import android.Manifest;
 import android.app.AlertDialog;
@@ -35,9 +43,8 @@ import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.json.JSONException;
-
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executors;
@@ -46,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
     private GpsTracker gpsTracker;
     private ApiExplorer apiExplorer;
-
-
 
     private ArrayList<UpcomingData> uparrayList;
     private UpcomingAdapter upAdapter;
@@ -111,6 +116,11 @@ public class MainActivity extends AppCompatActivity {
         permissionDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         permissionDialog.setContentView(R.layout.permissiondialog);
 
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMdd");
+        int getDate = Integer.parseInt(simpleDate.format(date));
+
         // 날씨
         Thread thread1 = new Thread() {
             @Override
@@ -118,12 +128,12 @@ public class MainActivity extends AppCompatActivity {
                 super.run();
                 try {
                     HttpConnection http = new HttpConnection();
-                    http.getServerSoon(1, 20210714);
+                    ArrayList<Post> post = http.getServerSoon(1, getDate);
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            setUpInfo((ArrayList<Post>) http.getPostSoon());
+                            setUpInfo(post);
                             upAdapter.notifyDataSetChanged();
                         }
                     });
@@ -136,8 +146,12 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 super.run();
                 try {
+                    gpsTracker = new GpsTracker(MainActivity.this);
+
+                    double latitude = gpsTracker.getLatitude();
+                    double longitude = gpsTracker.getLongitude();
                     HttpConnection http = new HttpConnection();
-                    http.getServerAround(1, 37.49 ,126.83);
+                    ArrayList<Post> post2 = http.getServerAround(1, latitude ,longitude);
 
 //                    http.getServer(1);
 //                    http.getServerDetail(1);
@@ -145,8 +159,7 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d("TEST>>" , "NEAR LIST SETUp : " + http.getPostAround().size());
-                            NearsetUpInfo((ArrayList<Post>) http.getPostAround());
+                            NearsetUpInfo(post2);
                             nearAdapter.notifyDataSetChanged();
                         }
                     });
@@ -240,6 +253,28 @@ public class MainActivity extends AppCompatActivity {
                 String address = getCurrentAddress(latitude, longitude);
                 textview_address.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.brown_grey));
                 textview_address.setText(address);
+
+                Thread thread3= new Thread(){
+                    @Override
+                    public void run() {
+                        super.run();
+                        try {
+                            HttpConnection http = new HttpConnection();
+                            ArrayList<Post> post2 = http.getServerAround(1, latitude ,longitude);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    NearsetUpInfo(post2);
+                                    nearAdapter.notifyDataSetChanged();
+                                }
+                            });
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                thread3.start();
 
                 Toast.makeText(MainActivity.this, "현재위치 \n위도 " + latitude + "\n경도 " + longitude, Toast.LENGTH_LONG).show();
             }

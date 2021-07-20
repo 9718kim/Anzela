@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.anzela.myapplication1.Activity.DetailActivity;
+
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 

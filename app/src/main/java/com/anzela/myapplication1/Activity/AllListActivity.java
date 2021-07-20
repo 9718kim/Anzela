@@ -1,16 +1,24 @@
-package com.anzela.myapplication1;
+package com.anzela.myapplication1.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.anzela.myapplication1.HttpConnection;
+import com.anzela.myapplication1.NearAdapter;
+import com.anzela.myapplication1.NearData;
+import com.anzela.myapplication1.Post;
+import com.anzela.myapplication1.R;
+
 import java.util.ArrayList;
 
-public class TimeLineListActivity extends AppCompatActivity {
+public class AllListActivity extends AppCompatActivity {
 
     private ArrayList<NearData> neararrayList;
     private NearAdapter nearAdapter;
@@ -24,13 +32,13 @@ public class TimeLineListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.timelinelist);
+        setContentView(R.layout.alllist);
 
         backButton = findViewById(R.id.backpressed);
         writeButton = findViewById(R.id.write);
         writebigButton = findViewById(R.id.writebig);
 
-        nearrecyclerView = (RecyclerView)findViewById(R.id.comingrv);
+        nearrecyclerView = (RecyclerView)findViewById(R.id.allrv);
         nearlinearLayoutManager = new LinearLayoutManager(this);
         nearrecyclerView.setLayoutManager(nearlinearLayoutManager);
         neararrayList = new ArrayList<>();
@@ -43,12 +51,12 @@ public class TimeLineListActivity extends AppCompatActivity {
                 super.run();
                 try {
                     HttpConnection http = new HttpConnection();
-                    http.getServerSoon(1, 20210714);
+                    ArrayList<Post> post = http.getServer(1);
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            NearsetUpInfo((ArrayList<Post>) http.getPostSoon());
+                            NearsetUpInfo(post);
                             nearAdapter.notifyDataSetChanged();
                         }
                     });

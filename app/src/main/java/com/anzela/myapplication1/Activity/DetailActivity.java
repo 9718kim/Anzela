@@ -1,8 +1,9 @@
-package com.anzela.myapplication1;
+package com.anzela.myapplication1.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +11,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import com.anzela.myapplication1.BoardDetail;
+import com.anzela.myapplication1.CommentAdapter;
+import com.anzela.myapplication1.Comments;
+import com.anzela.myapplication1.HttpConnection;
+import com.anzela.myapplication1.R;
+import com.anzela.myapplication1.User;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,8 +25,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.Executors;
 
@@ -28,12 +34,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private ArrayList<Comments> boardDetailArrayList;
+    private CommentAdapter comAdapter;
+    private RecyclerView comRecyclerView;
+    private LinearLayoutManager comlinearLayoutManager;
+
     private GoogleMap mMap;
     public double Sla = 0;
     public double Slo = 0;
     public double Ela = 0;
     public double Elo = 0;
     private BoardDetail boardDetail;
+    private ArrayList<Comments> commentList;
 
     ImageView backButton;
     EditText writeCommend;
@@ -51,6 +63,9 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     TextView DetailText;
 
     TextView Modify;
+    TextView DeleteBtn;
+    TextView NoCommend;
+    TextView commentAll;
 
 
     @Override
@@ -74,6 +89,16 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         DetailText = findViewById(R.id.detailtext);
 
         Modify = findViewById(R.id.modify);
+        DeleteBtn = findViewById(R.id.deletebtn);
+        NoCommend = findViewById(R.id.nocommend);
+        commentAll = findViewById(R.id.commentall);
+
+        comRecyclerView = (RecyclerView)findViewById(R.id.commentrv);
+        comlinearLayoutManager = new LinearLayoutManager(this);
+        comRecyclerView.setLayoutManager(comlinearLayoutManager);
+        boardDetailArrayList = new ArrayList<>();
+        comAdapter = new CommentAdapter(boardDetailArrayList);
+        comRecyclerView.setAdapter(comAdapter);
 
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
@@ -88,6 +113,13 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                         @Override
                         public void run() {
                             setting(boardDetail);
+                            if (boardDetail.getComments().size() >= 1){
+                                commentAll.setText("댓글 " + boardDetail.cmtCnt + "개");
+                                NoCommend.setVisibility(View.GONE);
+                                comRecyclerView.setVisibility(View.VISIBLE);
+                                commentList = boardDetail.Comments;
+                                setcomment(commentList);
+                            }
                         }
                     });
                 }catch (Exception e){
@@ -116,14 +148,63 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
+        commentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!(writeCommend.getText().toString().equals("") || writeCommend.getText() == null)){
+                    Executors.newSingleThreadExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                HttpConnection http = new HttpConnection();
+                                int id = getIntent().getIntExtra("idnum", 0);
+                                http.getComment(id, writeCommend.getText().toString());
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        finish();
+                                        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+                                        intent.putExtra("idnum", id);
+                                        startActivity(intent);
+                                    }
+                                });
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+                }
+            }
+        });
+
         Modify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int idnum = getIntent().getIntExtra("idnum", 0);
+                int id = getIntent().getIntExtra("idnum", 0);
                 Intent intent = new Intent(getApplicationContext(), WriteActivity.class);
-                intent.putExtra("id", idnum);
+                intent.putExtra("id", id);
 //                intent.putExtra("data", boardDetail);
                 startActivity(intent);
+            }
+        });
+
+        DeleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+                Executors.newSingleThreadExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            HttpConnection http = new HttpConnection();
+                            int id = getIntent().getIntExtra("idnum", 0);
+                            http.getServerDelete(id);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         });
     }
@@ -213,5 +294,19 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+    public void setcomment(ArrayList<Comments> data){
+        for (int i = 0; i < data.size(); i++){
+
+            int id = data.get(i).id;
+            String content = data.get(i).content;
+            int depth = data.get(i).depth;
+            String regDate = data.get(i).regDate;
+            regDate = regDate.substring(0, regDate.indexOf(" "));
+            String uid = data.get(i).user.uid;
+            String profileUrl = data.get(i).user.profileUrl;
+
+            boardDetailArrayList.add(new Comments(id, content, depth, regDate, (new User(uid, profileUrl))));
+        }
     }
 }

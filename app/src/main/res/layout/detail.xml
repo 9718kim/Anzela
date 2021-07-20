@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/black_two"
     tools:ignore="MissingConstraints"
-    tools:context=".DetailActivity"
+    tools:context=".Activity.DetailActivity"
     android:focusableInTouchMode="true"
     android:clickable="true">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,6 +23,19 @@
             android:layout_marginStart="15dp"
             android:padding="10dp"
             android:id="@+id/backpressed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DELETE"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="20dp"
+            android:padding="10dp"
+            android:background="@color/aqua_marine"
+            android:id="@+id/deletebtn"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -303,7 +316,17 @@
                 android:textColor="@color/white"
                 android:gravity="center"
                 android:text="첫번째 댓글의 주인공이 되어보세요!"
-                android:id="@+id/nocommend"/>
+                android:id="@+id/nocommend"
+                android:visibility="visible"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/writecommend"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="48dp"
+                android:layout_marginTop="16dp"
+                android:id="@+id/commentrv"
+                android:visibility="gone"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
