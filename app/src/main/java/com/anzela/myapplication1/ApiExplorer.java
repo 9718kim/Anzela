@@ -1,5 +1,7 @@
 package com.anzela.myapplication1;
 
+import android.util.Log;
+
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -7,6 +9,7 @@ import java.net.URLEncoder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONArray;
@@ -23,48 +26,23 @@ public class ApiExplorer {
         Date date = new Date(now);
         SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat simpleTime = new SimpleDateFormat("kkmm");
+        SimpleDateFormat timecheck = new SimpleDateFormat("kk");
 
-        String getDate = simpleDate.format(date);
-        String getTime = simpleTime.format(date);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
 
-        int indate = Integer.parseInt(getDate);
-        int intime = Integer.parseInt(getTime);
+        int Ch = Integer.parseInt(timecheck.format(cal.getTime()));
 
-        // api가 3시간을 기준으로 검색이 가능하여 02:00 ~ 04:59을 02:00로 검색
-        if (intime < 200){
-            intime = 2300;
-            --indate;
-        }else if(intime < 500){
-            intime = 200;
-        }else if(intime < 800){
-            intime = 500;
-        }else if(intime < 1100){
-            intime = 800;
-        }else if(intime < 1400){
-            intime = 1100;
-        }else if(intime < 1700){
-            intime = 1400;
-        }else if(intime < 2000){
-            intime = 1700;
-        }else if(intime < 2300){
-            intime = 2000;
-        }else if(intime <= 2400){
-            intime = 2300;
-        }
+        int minus = (Ch - 2)%3;
+        cal.add(Calendar.HOUR, -minus);
 
-        // 200을 0200으로 변환
-        if(intime < 1000){
-            getTime = "0";
-            getTime += Integer.toString(intime);
-        }else{
-            getTime = Integer.toString(intime);
-        }
+        String getDate = simpleDate.format(cal.getTime());
+        String getTime = simpleTime.format(cal.getTime());
 
-        getDate = Integer.toString(indate);
+        Log.e("Check", "Date: " + getDate + ", Time: " + getTime);
         
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"); /*URL*/  //getUltraSrtNcst getVilageFcst getUltraSrtFcst
         urlBuilder.append("?" + URLEncoder.encode("ServiceKey","UTF-8") + "=6rhwGEsfLBipb8RoJ7psQT%2BRRpmvIhwcyJlUIZVIOIw3u0%2FSmzGa9K%2FaQxHKRKwEHB1ThylHyKS4eqOv%2Bv4JGQ%3D%3D"); /*Service Key*/
-        //urlBuilder.append("&" + URLEncoder.encode("ServiceKey","UTF-8") + "=" + URLEncoder.encode("6rhwGEsfLBipb8RoJ7psQT%2BRRpmvIhwcyJlUIZVIOIw3u0%2FSmzGa9K%2FaQxHKRKwEHB1ThylHyKS4eqOv%2Bv4JGQ%3D%3D", "UTF-8")); /*공공데이터포털에서 받은 인증키*/
         urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
         urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("10", "UTF-8")); /*한 페이지 결과 수*/
         urlBuilder.append("&" + URLEncoder.encode("dataType","UTF-8") + "=" + URLEncoder.encode("JSON", "UTF-8")); /*요청자료형식(XML/JSON) Default: XML*/
@@ -73,7 +51,7 @@ public class ApiExplorer {
         urlBuilder.append("&" + URLEncoder.encode("nx","UTF-8") + "=" + URLEncoder.encode("55", "UTF-8")); /*예보지점의 X 좌표값*/
         urlBuilder.append("&" + URLEncoder.encode("ny","UTF-8") + "=" + URLEncoder.encode("127", "UTF-8")); /*예보지점의 Y 좌표값*/
         URL url = new URL(urlBuilder.toString());
-        //Log.e("dukki", "url=" + urlBuilder.toString() );
+        //Log.e("Check-url", "url=" + urlBuilder.toString() );
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-type", "application/json");
@@ -92,8 +70,6 @@ public class ApiExplorer {
         rd.close();
         conn.disconnect();
         String result = sb.toString();
-        //String result = "{\"response\":{\"header\":{\"resultCode\":\"00\",\"resultMsg\":\"NORMAL_SERVICE\"},\"body\":{\"dataType\":\"JSON\",\"items\":{\"item\":[{\"baseDate\":\"20210711\",\"baseTime\":\"0600\",\"category\":\"PTY\",\"nx\":55,\"ny\":127,\"fcstValue\":\"1\"},{\"baseDate\":\"20210711\",\"baseTime\":\"0600\",\"category\":\"REH\",\"nx\":55,\"ny\":127,\"fcstValue\":\"94\"},{\"baseDate\":\"20210711\",\"baseTime\":\"0600\",\"category\":\"RN1\",\"nx\":55,\"ny\":127,\"fcstValue\":\"0.5\"},{\"baseDate\":\"20210711\",\"baseTime\":\"0600\",\"category\":\"T1H\",\"nx\":55,\"ny\":127,\"fcstValue\":\"23.7\"},{\"baseDate\":\"20210711\",\"baseTime\":\"0600\",\"category\":\"UUU\",\"nx\":55,\"ny\":127,\"fcstValue\":\"-0.3\"},{\"baseDate\":\"20210711\",\"baseTime\":\"0600\",\"category\":\"VEC\",\"nx\":55,\"ny\":127,\"fcstValue\":\"156\"},{\"baseDate\":\"20210711\",\"baseTime\":\"0600\",\"category\":\"VVV\",\"nx\":55,\"ny\":127,\"fcstValue\":\"0.8\"},{\"baseDate\":\"20210711\",\"baseTime\":\"0600\",\"category\":\"WSD\",\"nx\":55,\"ny\":127,\"fcstValue\":\"0.9\"}, {\"baseDate\":\"20210711\",\"baseTime\":\"0600\",\"category\":\"SKY\",\"nx\":55,\"ny\":127,\"fcstValue\":\"1\"}]},\"pageNo\":1,\"numOfRows\":10,\"totalCount\":8}}}";
-        //Log.e("dukki", "result=" + result);
 
         // response 키를 가지고 데이터를 파싱
         JSONObject jsonObj_1 = new JSONObject(result);
@@ -151,7 +127,6 @@ public class ApiExplorer {
             break;
         }
     }
-
     public String getResult() {
         return mTemperature + "° " + mWeather;
     }

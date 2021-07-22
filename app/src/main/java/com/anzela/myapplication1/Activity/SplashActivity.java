@@ -1,4 +1,4 @@
-package com.anzela.myapplication1;
+package com.anzela.myapplication1.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.anzela.myapplication1.Activity.MainActivity;
+import com.anzela.myapplication1.R;
 
 public class SplashActivity extends AppCompatActivity {
 

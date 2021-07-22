@@ -17,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.anzela.myapplication1.Post;
 import com.anzela.myapplication1.R;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,8 +46,8 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
     TextView PageText;
     TextView dueDate;
     TextView maxPerson;
-    TextView completeButton;
-//    TextView endDetail;
+    TextView Complete;
+    RelativeLayout completeBtn;
     ImageView backButton;
     CheckBox endPCheck;
     EditText titleText;
@@ -68,7 +70,8 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         setContentView(R.layout.write);
 
         backButton = findViewById(R.id.backpressed);
-        completeButton = findViewById(R.id.complete);
+        Complete = findViewById(R.id.complete);
+        completeBtn = findViewById(R.id.complete_btn);
         dueDate = findViewById(R.id.duedate);
         maxPerson = findViewById(R.id.detailmaxperson);
         endPCheck = findViewById(R.id.endPcheck);
@@ -135,43 +138,7 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
             }
         });
 
-//        completeButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (complete_check){
-//                    Toast.makeText(WriteActivity.this, "SAVE" ,Toast.LENGTH_LONG).show();
-//                    // 글 작성
-//
-//                    Executors.newSingleThreadExecutor().execute(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            try {
-//                                HttpConnection http = new HttpConnection();
-//                                Post post = new Post();
-//                                post.setTitle(titleText.getText().toString());
-//                                post.setContent(detailText.getText().toString());
-//                                post.setCruCnt(maxnum);
-//                                post.setStartDate(checkDate);
-//                                post.setStartPoint(startPText.getText().toString());
-//
-//                                String endPoint = endPText.getText().toString();
-//                                if (!endPoint.isEmpty()) {
-//                                    post.setEndPoint(endPoint);
-//                                }
-//                                http.getServerModify(id, post);
-//                            }catch (Exception e){
-//                                e.printStackTrace();
-//                            }
-//
-//                        }
-//                    });
-//                    onBackPressed();
-//                }else {
-//                    showerrorDialog();
-//                }
-//            }
-//        });
-        completeButton.setOnClickListener(new View.OnClickListener() {
+        completeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (complete_check){
@@ -197,18 +164,24 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
                                 if (!endPoint.isEmpty()) {
                                     post.setEndPoint(endPoint);
                                 }
+                                int code = 0;
                                 if (id == 0){
-                                    http.WriteServer(post);
+                                    code = http.WriteServer(post);
                                 }else {
-                                    http.getServerModify(id, post);
+                                    code = http.getServerModify(id, post);
                                 }
+                                Log.e("CODE", String.valueOf(code));
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        onBackPressed();
+                                    }
+                                });
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
-
                         }
                     });
-                    onBackPressed();
                 }else {
                     showerrorDialog();
                 }
@@ -252,11 +225,9 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
             @Override
             public void onClick(View v) {
                 if(endPCheck.isChecked()){
-//                    endDetail.setTextColor(ContextCompat.getColor(WriteActivity.this, R.color.white));
                     endPCheck.setTextColor(ContextCompat.getColor(WriteActivity.this, R.color.white));
                     endPText.setText("");
                 }else {
-//                    endDetail.setTextColor(Color.parseColor("#848484"));
                     endPCheck.setTextColor(Color.parseColor("#848484"));
                 }
                 clear();
@@ -278,12 +249,10 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         SimpleDateFormat simpleDate2 = new SimpleDateFormat("yyyy년 MM월 dd일");
         String getDate2 = simpleDate2.format(date);
 
-        //SpannableString content = new SpannableString("Content");
         SpannableString datecontent = new SpannableString(getDate2);
         datecontent.setSpan(new UnderlineSpan(), 0, datecontent.length(), 0);
         dueDate.setText(datecontent);
 
-        //SpannableString personcontent = new SpannableString("personcontent");
         SpannableString personcontent = new SpannableString("총 0명");
         personcontent.setSpan(new UnderlineSpan(), 0, personcontent.length(), 0);
         maxPerson.setText(personcontent);
@@ -291,8 +260,14 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         dueDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment datePicker = new DatePickerFragment();
-                datePicker.show(getSupportFragmentManager(), "date picker");
+                if (calendar == null){
+                    calendar = Calendar.getInstance();
+                }
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONDAY);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                Dialog dialog = new DatePickerDialog(WriteActivity.this, WriteActivity.this, year, month, day);
+                dialog.show();
                 clear();
             }
         });
@@ -341,19 +316,19 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
         });
     }
-
+    Calendar calendar;
     public void check(){
         if((!(titleText.getText().toString().equals("") || titleText.getText() == null))
         && (!(startPText.getText().toString().equals("") || startPText.getText() == null))
         && ((!(endPText.getText().toString().equals("") || endPText.getText() == null)) || endPCheck.isChecked())
         && (!(detailText.getText().toString().equals("") || detailText.getText() == null))){
-            completeButton.setBackgroundDrawable(ContextCompat.getDrawable(WriteActivity.this, R.drawable.radius12_aqua));
-            completeButton.setTextColor(ContextCompat.getColor(WriteActivity.this, R.color.aqua_marine));
+            Complete.setBackgroundDrawable(ContextCompat.getDrawable(WriteActivity.this, R.drawable.radius12_aqua));
+            Complete.setTextColor(ContextCompat.getColor(WriteActivity.this, R.color.aqua_marine));
             complete_check = true;
         }else{
             // null
-            completeButton.setBackgroundDrawable(ContextCompat.getDrawable(WriteActivity.this, R.drawable.radius12_2a594e));
-            completeButton.setTextColor(Color.parseColor("#2a594e"));
+            Complete.setBackgroundDrawable(ContextCompat.getDrawable(WriteActivity.this, R.drawable.radius12_2a594e));
+            Complete.setTextColor(Color.parseColor("#2a594e"));
             complete_check = false;
         }
     }
@@ -377,6 +352,7 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         editDialog.findViewById(R.id.yesButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                editDialog.dismiss();
                 onBackPressed();
             }
         });
@@ -421,9 +397,11 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();
+
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONDAY, month);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        this.calendar = calendar;
 
         SpannableString datecontent = new SpannableString(DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime()));
         datecontent.setSpan(new UnderlineSpan(), 0, datecontent.length(), 0);
@@ -443,9 +421,9 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
             Sday = String.valueOf(dayOfMonth);
         }
         checkDate = year + Smonth + Sday + "000000";
-//        checkDate = String.format("%d%d%d000000", year,month+1,dayOfMonth);
         Log.e("date-test", checkDate);
     }
+
     public void setting(BoardDetail data){
         Log.e("setting", "test");
         boardDetail = data;

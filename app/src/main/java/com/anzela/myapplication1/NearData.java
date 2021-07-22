@@ -14,15 +14,6 @@ public class NearData {
         this.NearDate = NearDate;
     }
 
-    @Override
-    public String toString() {
-        return "NearData{" +
-                "NearTitle='" + NearTitle + '\'' +
-                ", NearTeam=" + NearTeam +
-                ", NearDate='" + NearDate + '\'' +
-                '}';
-    }
-
     public int getId() {
         return id;
     }

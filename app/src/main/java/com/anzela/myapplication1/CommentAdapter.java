@@ -50,6 +50,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CustomVi
         return Comments.size();
     }
 
+    public void setUpInfo(ArrayList<Comments> data) {
+        Comments = data;
+        notifyDataSetChanged();
+    }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 

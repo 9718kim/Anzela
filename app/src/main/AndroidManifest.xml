@@ -15,7 +15,7 @@
             android:value="AIzaSyDnXKj837SJvYR31nFF_kqojR8Fd2xRnr4" />
 
 
-        <activity android:name="com.anzela.myapplication1.SplashActivity">
+        <activity android:name="com.anzela.myapplication1.Activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

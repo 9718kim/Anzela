@@ -2,12 +2,19 @@ package com.anzela.myapplication1.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +23,7 @@ import com.anzela.myapplication1.CommentAdapter;
 import com.anzela.myapplication1.Comments;
 import com.anzela.myapplication1.HttpConnection;
 import com.anzela.myapplication1.R;
+import com.anzela.myapplication1.ScrollableMapFragment;
 import com.anzela.myapplication1.User;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,6 +46,9 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     private CommentAdapter comAdapter;
     private RecyclerView comRecyclerView;
     private LinearLayoutManager comlinearLayoutManager;
+
+//    private NestedScrollView Scroll;
+    protected View Map;
 
     private GoogleMap mMap;
     public double Sla = 0;
@@ -129,6 +140,22 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
+        NestedScrollView Scroll = findViewById(R.id.scroll);
+
+        ScrollableMapFragment mapFragment = (ScrollableMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        assert mapFragment != null;
+        mapFragment.setListener(new ScrollableMapFragment.OnTouchListener() {
+            @Override
+            public void onActionDown() {
+                Scroll.requestDisallowInterceptTouchEvent(true);
+            }
+            @Override
+            public void onActionUp() {
+                Scroll.requestDisallowInterceptTouchEvent(false);
+            }
+        });
+
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,6 +178,9 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                writeCommend.clearFocus();
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(writeCommend.getWindowToken(), 0);
                 if(!(writeCommend.getText().toString().equals("") || writeCommend.getText() == null)){
                     Executors.newSingleThreadExecutor().execute(new Runnable() {
                         @Override
@@ -159,13 +189,20 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                                 HttpConnection http = new HttpConnection();
                                 int id = getIntent().getIntExtra("idnum", 0);
                                 http.getComment(id, writeCommend.getText().toString());
+                                http.getServerDetail(id);
+                                boardDetail = (BoardDetail) http.getBoardDetail();
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        finish();
-                                        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-                                        intent.putExtra("idnum", id);
-                                        startActivity(intent);
+                                        commentAll.setText("댓글 " + boardDetail.cmtCnt + "개");
+                                        writeCommend.setText("");
+                                        commentList = boardDetail.Comments;
+                                        comAdapter.setUpInfo(commentList);
+
+                                        if (boardDetail.getComments().size() >= 1){
+                                            NoCommend.setVisibility(View.GONE);
+                                            comRecyclerView.setVisibility(View.VISIBLE);
+                                        }
                                     }
                                 });
                             }catch (Exception e){
@@ -192,14 +229,20 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         DeleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
                 Executors.newSingleThreadExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             HttpConnection http = new HttpConnection();
                             int id = getIntent().getIntExtra("idnum", 0);
-                            http.getServerDelete(id);
+                            int code = http.getServerDelete(id);
+                            Log.e("CODE", String.valueOf(code));
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    onBackPressed();
+                                }
+                            });
                         }catch (Exception e){
                             e.printStackTrace();
                         }
@@ -214,7 +257,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
         mMap = googleMap;
         LatLng camera;
-//        LatLng startPoitn = new LatLng(37.49492908756368, 126.83953848543452);
         LatLng startPoitn = new LatLng(Sla, Slo);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(startPoitn);
@@ -276,6 +318,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
         StartDetail.setText(boardDetail.getStartPoint());
 
+        Log.e("TEST", boardDetail.getEndPoint());
         if (boardDetail.getEndPoint() == "text on no value"){
             EndDetail.setText("정해지지 않았습니다.");
             EndDetail.setTextColor(ContextCompat.getColor(DetailActivity.this, R.color.very_light_pink));
@@ -309,4 +352,5 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             boardDetailArrayList.add(new Comments(id, content, depth, regDate, (new User(uid, profileUrl))));
         }
     }
+
 }

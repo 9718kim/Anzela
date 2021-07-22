@@ -1,24 +1,16 @@
 package com.anzela.myapplication1;
 
 import android.util.Log;
-
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class HttpConnection {
@@ -29,15 +21,8 @@ public class HttpConnection {
     private ArrayList<Comments> commentsList= new ArrayList();
 
     // 모임 글 작성
-    public void WriteServer(Post post) throws UnsupportedEncodingException{
-
+    public int WriteServer(Post post) throws JSONException {
         JsonObject jsonObj = new JsonObject();
-//        jsonObj.addProperty("title", URLEncoder.encode(post.getTitle(), "utf-8"));
-//        jsonObj.addProperty("content", URLEncoder.encode(post.getContent(), "utf-8"));
-//        jsonObj.addProperty("cruCnt", post.getCruCnt());
-//        jsonObj.addProperty("startDate", URLEncoder.encode(post.getStartDate(), "utf-8"));
-//        jsonObj.addProperty("startPoint", URLEncoder.encode(post.getStartPoint(), "utf-8"));
-//        jsonObj.addProperty("endPoint", URLEncoder.encode(post.getEndPoint(), "utf-8"));
 
         jsonObj.addProperty("title", post.getTitle());
         jsonObj.addProperty("content", post.getContent());
@@ -50,10 +35,16 @@ public class HttpConnection {
         Log.e("req-test", jsonReq);
         ServerList("/api/v1/posts", jsonReq, "POST");
         Log.e("WriteServer_result", result);
+
+        JSONObject jsonObj_1 = new JSONObject(result);
+        int code = jsonObj_1.optInt("code", 0);
+
+        Log.e("WriteServer_code", String.valueOf(code));
+        return code;
     }
 
     // 모임 리스트
-    public ArrayList<Post> getServer(int page) throws JSONException, UnsupportedEncodingException {
+    public ArrayList<Post> getServer(int page) throws JSONException {
         ServerList("/api/v1/posts", "?page=" + page,"GET");
         ArrayList<Post> PostList = new ArrayList<>();
 
@@ -65,12 +56,18 @@ public class HttpConnection {
         JSONObject jsonObj_2 = new JSONObject(data);
         JSONArray jsonArray = jsonObj_2.getJSONArray("content");
 
+        int totalCount = jsonObj_2.getInt("totalCount");
+        Log.e("totalCount", String.valueOf(totalCount));
+
+        if (totalCount == 0){
+            PostList.add(new Post(0, "title", "", 0, "", "", "", "", "", "", "", 0, ""));
+        }
+
         for(int i = 0; i < jsonArray.length(); i++) {
             jsonObj_2 = jsonArray.getJSONObject(i);
 
-            int id = jsonObj_2.getInt("id");
+            int id = jsonObj_2.optInt("id", 0);
             String title = jsonObj_2.getString("title");
-//            String title = jsonObj_2.getString("title");
             String content = jsonObj_2.getString("content");
             int cruCnt = jsonObj_2.getInt("cruCnt");
             String startDate = jsonObj_2.getString("startDate");
@@ -89,7 +86,7 @@ public class HttpConnection {
     }
 
     // 내근처 리스트
-    public ArrayList<Post> getServerAround(int page, double lat, double lng) throws JSONException, UnsupportedEncodingException {
+    public ArrayList<Post> getServerAround(int page, double lat, double lng) throws JSONException {
         ServerList("/api/v1/posts/around", "?page="+ page +"&lat=" + lat + "&lng=" + lng,"GET");
         ArrayList<Post> PostListAround = new ArrayList<>();
 
@@ -99,6 +96,13 @@ public class HttpConnection {
 
         JSONObject jsonObj_2 = new JSONObject(data);
         JSONArray jsonArray = jsonObj_2.getJSONArray("content");
+
+        int totalCount = jsonObj_2.getInt("totalCount");
+        Log.e("totalCount", String.valueOf(totalCount));
+
+        if (totalCount == 0){
+            PostListAround.add(new Post(0, "title", "", 0, "", "", "", "", "", "", "", 0, ""));
+        }
 
         for(int i = 0; i < jsonArray.length(); i++) {
             jsonObj_2 = jsonArray.getJSONObject(i);
@@ -135,6 +139,13 @@ public class HttpConnection {
         JSONObject jsonObj_2 = new JSONObject(data);
         JSONArray jsonArray = jsonObj_2.getJSONArray("content");
 
+        int totalCount = jsonObj_2.getInt("totalCount");
+        Log.e("totalCount", String.valueOf(totalCount));
+
+        if (totalCount == 0){
+            PostListSoon.add(new Post(0, "title", "", 0, "", "", "", "", "", "", "", 0, ""));
+        }
+
         Log.d("TEST>>"  , "soon json array : " + jsonArray.length());
         for(int i = 0; i < jsonArray.length(); i++) {
             jsonObj_2 = jsonArray.getJSONObject(i);
@@ -160,7 +171,7 @@ public class HttpConnection {
     }
 
     // 모임 상세
-    public void getServerDetail(int id) throws JSONException, UnsupportedEncodingException {
+    public void getServerDetail(int id) throws JSONException {
         ServerList("/api/v1/posts/" + id, "", "GET");
 
         JSONObject jsonObj_result = new JSONObject(result);
@@ -176,16 +187,15 @@ public class HttpConnection {
 
         int id1 = jsonObj_data.getInt("id");
         String title = jsonObj_data.getString("title");
-//        String title = jsonObj_data.getString("title");
         String content = jsonObj_data.getString("content");
         int cruCnt = jsonObj_data.getInt("cruCnt");
         String startDate = jsonObj_data.getString("startDate");
         String startPoint = jsonObj_data.getString("startPoint");
         String startLat = jsonObj_data.getString("startLat");
         String startLng = jsonObj_data.getString("startLng");
-        String endPoint = jsonObj_data.getString("endPoint");
-        String endLat = jsonObj_data.getString("endLat");
-        String endLng = jsonObj_data.getString("endLng");
+        String endPoint = jsonObj_data.optString("endPoint", "text on no value");
+        String endLat = jsonObj_data.optString("endLat", "text on no value");
+        String endLng = jsonObj_data.optString("endLng", "text on no value");
         int cmtCnt = jsonObj_data.getInt("cmtCnt");
         String regDate = jsonObj_data.getString("regDate");
 
@@ -206,13 +216,12 @@ public class HttpConnection {
             commentsList.add(new Comments(com_id, com_content, com_depth, com_regDate, (new User(com_uid, com_profileUrl))));
         }
 
-        //Log.e("Test", content);
         BoardDetail =(new BoardDetail(id1, title, content, cruCnt, startDate, startPoint, startLat, startLng, endPoint, endLat, endLng, cmtCnt, regDate, (new User(uid, profileUrl)), commentsList));
         Log.e("Test", BoardDetail.getContent());
     }
 
     // 모임 수정
-    public void getServerModify(int id, Post post) throws UnsupportedEncodingException {
+    public int getServerModify(int id, Post post) throws JSONException {
         JsonObject jsonObj = new JsonObject();
         jsonObj.addProperty("title", post.getTitle());
         jsonObj.addProperty("content", post.getContent());
@@ -225,11 +234,22 @@ public class HttpConnection {
         Log.e("req-test", jsonReq);
         ServerList("/api/v1/posts/" + id, jsonReq, "POST");
         Log.e("WriteServer_result", result);
+
+        JSONObject jsonObj_1 = new JSONObject(result);
+        int code = jsonObj_1.optInt("code", 0);
+
+        Log.e("WriteServer_code", String.valueOf(code));
+        return code;
     }
 
     // 모임 삭제
-    public void getServerDelete(int id){
+    public int getServerDelete(int id) throws JSONException {
         ServerList("/api/v1/posts/" + id, "", "DELETE");
+
+        JSONObject jsonObj_1 = new JSONObject(result);
+        int code = jsonObj_1.optInt("code", 0);
+        Log.e("WriteServer_code", String.valueOf(code));
+        return code;
     }
 
     // 댓글 작성
@@ -259,21 +279,13 @@ public class HttpConnection {
             con.setRequestProperty("Content-Type", "application/json;charset=utf-8");
             con.setRequestProperty("Accept", "application/json");
 
-
             if(method.equals("POST")){
                 con.setDoOutput(true); // POST 파라미터 전달을 위한 설정
-
                 // post방식으로 req 전달할 때 필요
                 OutputStream out = con.getOutputStream();
                 out.write(req.getBytes());
                 out.flush();
                 out.close();
-//                OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream(), "UTF-8");
-//                DataOutputStream dataout = new DataOutputStream(con.getOutputStream());
-//                out.write(req);
-//                out.flush();
-//                out.close();
-
             }
             int responseCode = con.getResponseCode();
             BufferedReader br;

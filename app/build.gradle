@@ -45,6 +45,11 @@ android {
 
 
 dependencies {
+    //noinspection GradleCompatible
+    implementation 'com.android.support:recyclerview-v7:22.0.0'
+//    implementation 'https://gist.github.com/ssinss/e06f12ef66c51252563e'
+
+
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.jakewharton:butterknife:10.2.3'

@@ -45,7 +45,6 @@ public class NearAdapter extends RecyclerView.Adapter<NearAdapter.CustomViewHold
             @Override
             public void onClick(View v) {
                 int idnum = holder.id;
-//                Toast.makeText(v.getContext(), String.valueOf(idnum), Toast.LENGTH_SHORT).show();
 
                 // id 값으로 모임 상세 페이지 호출
                 Intent intent = new Intent(v.getContext(), DetailActivity.class);
@@ -60,10 +59,10 @@ public class NearAdapter extends RecyclerView.Adapter<NearAdapter.CustomViewHold
         return NeararrayList.size();
     }
 
-    public void NearsetUpInfo(ArrayList<NearData> data) {
-        NeararrayList = data;
-        notifyDataSetChanged();
-    }
+//    public void NearsetUpInfo(ArrayList<NearData> data) {
+//        NeararrayList = data;
+//        notifyDataSetChanged();
+//    }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 

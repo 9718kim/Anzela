@@ -21,39 +21,42 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginStart="14dp"
-                android:padding="10dp"
+                android:padding="24dp"
                 android:src="@drawable/ic_menu"
                 android:id="@+id/open_menu"/>
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/userimg"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:padding="10dp"
-                android:layout_marginEnd="14dp"
+                android:layout_height="match_parent"
+                app:layout_constraintEnd_toStartOf="@id/userbox"
+                android:paddingStart="16dp"
+                android:paddingEnd="12dp"
                 android:src="@drawable/ic_noti"
                 android:background="@android:color/transparent"
                 android:id="@+id/notice"/>
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/userimg"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/my_img"
-                app:layout_constraintTop_toTopOf="parent"
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                tools:ignore="MissingConstraints"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginEnd="24dp"
-                app:layout_constraintVertical_bias="0.475"
-                tools:ignore="MissingConstraints" />
+                android:paddingTop="16dp"
+                android:paddingEnd="24dp"
+                android:paddingBottom="16dp"
+                android:paddingStart="12dp"
+                android:id="@+id/userbox">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/userimg"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/my_img"
+                    app:layout_constraintVertical_bias="0.475"
+                    tools:ignore="MissingConstraints" />
+            </RelativeLayout>
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -116,16 +119,6 @@
                             android:textColor="@color/aqua_marine"
                             android:id="@+id/weather_temperature"
                             android:text="°"/>
-                        <!--<TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintStart_toEndOf="@id/weather_temperature"
-                            android:layout_marginStart="4dp"
-                            android:textStyle="normal"
-                            android:textSize="14dp"
-                            android:textColor="@color/aqua_marine"
-                            android:text=""
-                            android:id="@+id/weather_text1"/>-->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -256,6 +249,7 @@
         android:background="@color/black_three"
         android:layout_gravity="start">
 
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -268,21 +262,8 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_close_white"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="12dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="10dp"
-                android:id="@+id/close_menu"
-                android:background="@android:color/transparent"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/close_menu"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="96dp"
                 android:id="@+id/m_logo"
                 app:srcCompat="@drawable/menu_logo"/>
 
@@ -418,5 +399,17 @@
                 android:text="ver 1.0.0"
                 android:layout_marginBottom="24dp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close_white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:paddingTop="42dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="42dp"
+            android:paddingBottom="24dp"
+            android:id="@+id/close_menu"
+            android:background="@android:color/transparent"/>
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

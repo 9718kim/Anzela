@@ -61,10 +61,10 @@ public class UpcomingAdapter extends RecyclerView.Adapter<UpcomingAdapter.Custom
         return arrayList.size();
     }
 
-    public void setUpInfo(ArrayList<UpcomingData> data) {
-        arrayList = data;
-        notifyDataSetChanged();
-    }
+//    public void setUpInfo(ArrayList<UpcomingData> data) {
+//        arrayList = data;
+//        notifyDataSetChanged();
+//    }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
