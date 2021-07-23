@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Executors;
 
@@ -111,34 +112,34 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         comAdapter = new CommentAdapter(boardDetailArrayList);
         comRecyclerView.setAdapter(comAdapter);
 
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    int id = getIntent().getIntExtra("idnum", 0);
-                    HttpConnection http = new HttpConnection();
-                    http.getServerDetail(id);
-                    boardDetail = (BoardDetail) http.getBoardDetail();
-                    Log.e("Detail-text", "bbb");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            setting(boardDetail);
-                            if (boardDetail.getComments().size() >= 1){
-                                commentAll.setText("댓글 " + boardDetail.cmtCnt + "개");
-                                NoCommend.setVisibility(View.GONE);
-                                comRecyclerView.setVisibility(View.VISIBLE);
-                                commentList = boardDetail.Comments;
-                                setcomment(commentList);
-                            }
-                        }
-                    });
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-
-            }
-        });
+//        Executors.newSingleThreadExecutor().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    int id = getIntent().getIntExtra("idnum", 0);
+//                    HttpConnection http = new HttpConnection();
+//                    http.getServerDetail(id);
+//                    boardDetail = (BoardDetail) http.getBoardDetail();
+//                    Log.e("Detail-text", "bbb");
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            setting(boardDetail);
+//                            if (boardDetail.getComments().size() >= 1){
+//                                commentAll.setText("댓글 " + boardDetail.cmtCnt + "개");
+//                                NoCommend.setVisibility(View.GONE);
+//                                comRecyclerView.setVisibility(View.VISIBLE);
+//                                commentList = boardDetail.Comments;
+//                                setcomment(commentList);
+//                            }
+//                        }
+//                    });
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        });
 
         NestedScrollView Scroll = findViewById(R.id.scroll);
 
@@ -253,6 +254,40 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int id = getIntent().getIntExtra("idnum", 0);
+                    HttpConnection http = new HttpConnection();
+                    http.getServerDetail(id);
+                    boardDetail = (BoardDetail) http.getBoardDetail();
+                    Log.e("Detail-text", "bbb");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setting(boardDetail);
+                            if (boardDetail.getComments().size() >= 1){
+                                commentAll.setText("댓글 " + boardDetail.cmtCnt + "개");
+                                NoCommend.setVisibility(View.GONE);
+                                comRecyclerView.setVisibility(View.VISIBLE);
+                                commentList = boardDetail.Comments;
+                                setcomment(commentList);
+                            }
+                        }
+                    });
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
@@ -345,7 +380,16 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             String content = data.get(i).content;
             int depth = data.get(i).depth;
             String regDate = data.get(i).regDate;
-            regDate = regDate.substring(0, regDate.indexOf(" "));
+
+            long now = System.currentTimeMillis();
+            Date date = new Date(now);
+            SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy. MM. dd");
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+
+            regDate = simpleDate.format(cal.getTime());
+
             String uid = data.get(i).user.uid;
             String profileUrl = data.get(i).user.profileUrl;
 

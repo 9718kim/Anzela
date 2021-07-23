@@ -25,6 +25,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:padding="24dp"
                 android:src="@drawable/ic_menu"
+                android:scaleType="fitXY"
                 android:id="@+id/open_menu"/>
 
             <ImageView
@@ -205,7 +206,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/near_box"
                     android:paddingBottom="14dp"
-                    android:layout_marginTop="14dp">
+                    android:layout_marginTop="10dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -232,7 +233,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@id/circle"
                         app:layout_constraintEnd_toEndOf="@id/circle"
-                        android:padding="20dp"
+                        android:padding="14dp"
                         android:src="@drawable/ic_right_arrow_white"
                         android:id="@+id/moreBtn"/>
 

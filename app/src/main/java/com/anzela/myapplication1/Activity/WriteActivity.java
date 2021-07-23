@@ -20,19 +20,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-
 import com.anzela.myapplication1.BoardDetail;
-import com.anzela.myapplication1.DatePickerFragment;
 import com.anzela.myapplication1.HttpConnection;
 import com.anzela.myapplication1.Post;
 import com.anzela.myapplication1.R;
-
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,6 +36,10 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
 
     boolean complete_check = false;
     int maxnum = 0;
+    int y = 0;
+    int m = 0;
+    int d = 0;
+    Calendar calendar;
     String checkDate = "";
     TextView PageText;
     TextView dueDate;
@@ -257,16 +255,29 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         personcontent.setSpan(new UnderlineSpan(), 0, personcontent.length(), 0);
         maxPerson.setText(personcontent);
 
+        final Calendar c = Calendar.getInstance();
+
         dueDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.e("calender1", String.valueOf(calendar));
                 if (calendar == null){
                     calendar = Calendar.getInstance();
                 }
-                int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONDAY);
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                Dialog dialog = new DatePickerDialog(WriteActivity.this, WriteActivity.this, year, month, day);
+                int year, month, day;
+                if(y !=0 ){
+                    year = y;
+                    month = m -1;
+                    day = d;
+                }else {
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONDAY);
+                    day = calendar.get(Calendar.DAY_OF_MONTH);
+                }
+                DatePickerDialog dialog = new DatePickerDialog(WriteActivity.this, WriteActivity.this, year, month, day);
+                DatePicker dp = dialog.getDatePicker();
+                dp.setMinDate(c.getTimeInMillis());//get the current day
+                Log.e("calender2", String.valueOf(calendar));
                 dialog.show();
                 clear();
             }
@@ -316,7 +327,7 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
         });
     }
-    Calendar calendar;
+//    Calendar calendar;
     public void check(){
         if((!(titleText.getText().toString().equals("") || titleText.getText() == null))
         && (!(startPText.getText().toString().equals("") || startPText.getText() == null))
@@ -431,10 +442,17 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         titleText.setText(boardDetail.getTitle());
 
         String str = boardDetail.startDate;
+        Log.e("startDate", boardDetail.startDate);
         String yy = str.substring(0, 4);
         String mm = str.substring(5, 7);
         String dd = str.substring(8, 10);
         String newdate = yy + "년 " + mm + "월 " + dd + "일";
+
+        y = Integer.parseInt(yy);
+        m = Integer.parseInt(mm);
+        d = Integer.parseInt(dd);
+
+        Log.e("y: ", y + " m: " + m  + " d: "+ d);
 
         SpannableString datecontent = new SpannableString(newdate);
         datecontent.setSpan(new UnderlineSpan(), 0, datecontent.length(), 0);
@@ -456,6 +474,8 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
         }
         checkDate = yy + Smonth + Sday + "000000";
 
+
+
         maxnum = boardDetail.getCruCnt();
         SpannableString personcontent = new SpannableString("총 " + maxnum +"명");
         personcontent.setSpan(new UnderlineSpan(), 0, personcontent.length(), 0);
@@ -463,8 +483,10 @@ public class WriteActivity extends AppCompatActivity implements DatePickerDialog
 
         startPText.setText(boardDetail.getStartPoint());
 
+        Log.e("endPoint", boardDetail.getEndPoint());
+
         if (boardDetail.getEndPoint() == "text on no value"){
-            endPCheck.isChecked();
+            endPCheck.setChecked(true);
         }else{
             endPText.setText(boardDetail.getEndPoint());
         }

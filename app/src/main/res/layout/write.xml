@@ -201,7 +201,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/startP"
                 android:background="#848484"
                 android:id="@+id/startPline"/>
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@color/black"
@@ -209,9 +209,8 @@
                 android:layout_marginTop="16dp"
                 android:id="@+id/endBox">
                 <EditText
-                    android:layout_width="10dp"
-                    android:layout_height="48dp"
-                    android:layout_weight="7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:background="@color/black"
                     android:textStyle="normal"
                     android:textSize="14dp"
@@ -222,19 +221,23 @@
                     android:hint="도착지"
                     android:id="@+id/endP"
                     android:maxLength="100"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/endPcheck"
                     android:singleLine="true"/>
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:src="@drawable/mycheck"
                     android:textStyle="normal"
                     android:textSize="14dp"
                     android:textColor="#848484"
                     android:text="정하지않음"
-                    android:gravity="center"
+                    android:paddingEnd="16dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:id="@+id/endPcheck"/>
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </RelativeLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
